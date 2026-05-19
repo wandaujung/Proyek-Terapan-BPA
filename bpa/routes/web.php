@@ -14,7 +14,11 @@ Route::get('/register', [AuthController::class, 'registerForm'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/dashboard', function () {
-    return "Dashboard";
+    return "dashboard";
 })->middleware('auth');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/projects', function () {
+    return view('projects');
+});
