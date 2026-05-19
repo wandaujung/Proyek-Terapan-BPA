@@ -18,47 +18,60 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+
     public function registerForm()
-    {
-        $divisions = Division::all();
-        return view('auth.register', compact('divisions'));
-    }
+{
+    return view('auth.register');
+}
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6',
+    ]);
 
-    // =====================
-    // REGISTER
-    // =====================
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'division_id' => 'required'
-        ]);
+    User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'division_id' => $request->division_id
-        ]);
-
-        return redirect('/login')->with('success', 'Register berhasil');
-    }
+    return redirect('/login')->with('success', 'Register berhasil');
+}
 
     // =====================
     // LOGIN
     // =====================
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+   public function login(Request $request)
+{
+    $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            return redirect('/dashboard');
+    if (Auth::attempt($credentials)) {
+
+        $division = Auth::user()->division->name;
+
+        if ($division == 'AC') {
+            return redirect('/dashboard/ac');
         }
 
-        return back()->with('error', 'Email atau password salah');
+        if ($division == 'Curriculum') {
+            return redirect('/dashboard/curriculum');
+        }
+
+        if ($division == 'MKLT') {
+            return redirect('/dashboard/mklt');
+        }
+
+        if ($division == 'MKWK') {
+            return redirect('/dashboard/mkwk');
+        }
+
+        return redirect('/login');
     }
+
+    return back()->with('error', 'Email atau password salah');
+}
 
     // =====================
     // LOGOUT 

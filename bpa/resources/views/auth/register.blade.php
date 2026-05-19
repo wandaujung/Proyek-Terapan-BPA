@@ -35,13 +35,7 @@
                 </svg>
             </div>
 
-            <div class="form-group">
-                <label>DIVISION</label>
-               <select name="division_id" required>
-    <option value="" disabled selected hidden>Choose Your Division</option>
-    @foreach($divisions as $d)
-        <option value="{{ $d->id }}">{{ $d->name }}</option>
-    @endforeach
+            
 </select>
             </div>
 
