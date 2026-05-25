@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -34,6 +35,11 @@ Route::get('/dashboard', function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/projects', function () {
-    return view('projects');
-})->name('projects');
+
+Route::get('/projects', [ProjectController::class, 'index'])
+    ->middleware('auth')
+    ->name('projects');
+
+Route::post('/projects', [ProjectController::class, 'store'])
+    ->middleware('auth')
+    ->name('projects.store');

@@ -142,7 +142,7 @@
           Dashboard
         </a>
         <a
-          href="#"
+          href="{{ route('projects') }}"
           class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition"
         >
           <i class="ti ti-folder text-base"></i>
