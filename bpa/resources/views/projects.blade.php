@@ -1,3 +1,4 @@
+```php
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -42,10 +43,27 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #C0282D55; border-radius: 99px; }
 
-    /* Hide default date picker icon on webkit */
-    input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; right: 0; width: 100%; cursor: pointer; }
-    .date-wrapper { position: relative; }
-    .date-wrapper .cal-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #aaa; font-size: 16px; }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+      position: absolute;
+      right: 0;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .date-wrapper {
+      position: relative;
+    }
+
+    .date-wrapper .cal-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #aaa;
+      font-size: 16px;
+    }
   </style>
 </head>
 
@@ -54,7 +72,7 @@
   <!-- SIDEBAR -->
   <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5">
 
-    <div class="brand text-3xl text-red px-1">
+    <div class="brand text-3xl text-red">
       PLANNER U
     </div>
 
@@ -82,12 +100,6 @@
         Projects
       </a>
 
-      <a href="#"
-         class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
-        <i class="ti ti-bell text-base"></i>
-        Notification
-      </a>
-
     </nav>
   </aside>
 
@@ -104,7 +116,7 @@
       </div>
 
       <div class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none">
-        AD
+        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
       </div>
 
     </header>
@@ -115,6 +127,7 @@
       <!-- HEADING -->
       <div>
         <h1 class="brand text-4xl tracking-widest">PROJECTS</h1>
+
         <p class="text-[10px] font-semibold tracking-[.18em] text-gray-400 mt-0.5 uppercase">
           Manage and monitor all projects in the Curriculum Division Workspace.
         </p>
@@ -123,7 +136,7 @@
       <!-- GRID -->
       <div class="grid grid-cols-3 gap-4">
 
-        <!-- CARD ADD -->
+        <!-- ADD CARD -->
         <div
           id="openModalCard"
           class="bg-white border-2 border-dashed border-black/15 rounded-3xl flex flex-col items-center justify-center gap-3 p-8 min-h-[220px] cursor-pointer hover:border-red/40 hover:bg-red/5 transition group"
@@ -131,10 +144,12 @@
           <div class="w-12 h-12 rounded-full border-2 border-black/20 group-hover:border-red/40 flex items-center justify-center transition">
             <i class="ti ti-plus text-xl text-gray-400 group-hover:text-red transition"></i>
           </div>
+
           <div class="text-center">
             <p class="font-semibold text-sm text-gray-700 group-hover:text-red transition">
               Initiate New Entry
             </p>
+
             <p class="text-xs text-gray-400 mt-0.5">
               Start a fresh editorial project
             </p>
@@ -144,47 +159,101 @@
         <!-- PROJECT LOOP -->
         @foreach($projects as $project)
 
-        <div class="bg-white border border-black/10 rounded-3xl p-6 shadow-sm flex flex-col justify-between min-h-[220px] hover:shadow-md transition cursor-pointer">
+        <div class="bg-white border border-black/10 rounded-3xl p-6 shadow-sm flex flex-col justify-between min-h-[220px] hover:shadow-md transition">
 
           <div class="flex flex-col gap-2">
-            <span class="bg-red text-white text-[9px] font-bold px-2.5 py-1 rounded-full w-fit tracking-widest">
-              PROJECT
-            </span>
+
+            <!-- TOP -->
+            <div class="flex items-center justify-between">
+
+              <span class="bg-red text-white text-[9px] font-bold px-2.5 py-1 rounded-full w-fit tracking-widest">
+                PROJECT
+              </span>
+
+              <!-- ACTION BUTTON -->
+              <div class="flex items-center gap-2">
+
+                <!-- EDIT -->
+                <a
+                  href="{{ route('projects.edit', $project->id) }}"
+                  class="w-8 h-8 rounded-full bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition"
+                >
+                  <i class="ti ti-edit text-blue-500 text-sm"></i>
+                </a>
+
+                <!-- DELETE -->
+                <form
+                  action="{{ route('projects.destroy', $project->id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Delete this project?')"
+                >
+                  @csrf
+                  @method('DELETE')
+
+                  <button
+                    type="submit"
+                    class="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 flex items-center justify-center transition"
+                  >
+                    <i class="ti ti-trash text-red text-sm"></i>
+                  </button>
+                </form>
+
+              </div>
+
+            </div>
+
+            <!-- PROJECT TITLE -->
             <h3 class="brand text-2xl tracking-wider mt-1 uppercase">
               {{ $project->name }}
             </h3>
+
             <p class="text-xs text-gray-400 font-medium">
               Planner U Workspace
             </p>
+
           </div>
 
           <div class="flex flex-col gap-3 mt-4">
 
             <!-- PIC -->
             <div class="flex items-center gap-2.5">
+
               <div class="w-8 h-8 rounded-full bg-[#D3CEC6] flex items-center justify-center text-[10px] font-bold">
                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
               </div>
+
               <div>
                 <p class="text-[10px] font-bold tracking-wide text-[#1A1A1A] uppercase">
                   {{ Auth::user()->name }}
                 </p>
-                <p class="text-[9px] text-gray-400 tracking-wide">PERSON IN CHARGE</p>
+
+                <p class="text-[9px] text-gray-400 tracking-wide">
+                  PERSON IN CHARGE
+                </p>
               </div>
+
             </div>
 
             <!-- DATE -->
             <div class="flex items-center justify-between">
+
               <div class="flex items-center gap-1.5 text-xs text-gray-500">
                 <i class="ti ti-calendar text-gray-400 text-sm"></i>
                 {{ $project->start_project }} - {{ $project->end_project }}
               </div>
-              <div class="w-6 h-6 rounded-full bg-[#F0EDE8] flex items-center justify-center">
-                <i class="ti ti-chevron-right text-xs text-gray-500"></i>
-              </div>
+
+              <!-- DETAIL BUTTON -->
+              <a
+                href="#"
+                class="w-8 h-8 rounded-full bg-[#F0EDE8] hover:bg-red hover:text-white transition flex items-center justify-center"
+              >
+                <i class="ti ti-chevron-right text-sm"></i>
+              </a>
+
             </div>
 
           </div>
+
         </div>
 
         @endforeach
@@ -193,222 +262,157 @@
     </div>
   </main>
 
-  <!-- ===================== MODAL ===================== -->
+  <!-- MODAL -->
   <div
     id="projectModal"
     class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50"
   >
-    <div class="bg-[#FAF8F5] rounded-3xl p-7 w-[480px] max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div class="bg-[#FAF8F5] rounded-3xl p-7 w-[480px] shadow-2xl">
 
-      <!-- MODAL HEADER -->
       <div class="flex items-start justify-between mb-6">
+
         <div>
-          <p class="text-[10px] font-bold tracking-[.15em] text-red uppercase mb-1">New Entry</p>
-          <h2 class="brand text-3xl tracking-wide">Initiate New Project</h2>
+          <p class="text-[10px] font-bold tracking-[.15em] text-red uppercase mb-1">
+            New Entry
+          </p>
+
+          <h2 class="brand text-3xl tracking-wide">
+            Initiate New Project
+          </h2>
         </div>
+
         <button id="closeModal" class="text-gray-400 hover:text-gray-700 transition text-xl mt-1">
           <i class="ti ti-x"></i>
         </button>
+
       </div>
 
       <form action="{{ route('projects.store') }}" method="POST">
+
         @csrf
 
         <!-- PROJECT NAME -->
         <div class="mb-4">
+
           <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
             Project Name
           </label>
+
           <input
             type="text"
             name="name"
             placeholder="Enter Project Name..."
-            class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red/20 placeholder-gray-300"
+            class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white"
             required
           >
+
         </div>
 
-        <!-- START DATE & END DATE -->
+        <!-- DATE -->
         <div class="grid grid-cols-2 gap-3 mb-4">
+
           <div>
+
             <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
               Start Date
             </label>
+
             <div class="date-wrapper">
+
               <input
                 type="date"
                 name="start_project"
-                class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red/20"
+                class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white"
                 required
               >
+
               <i class="ti ti-calendar cal-icon"></i>
+
             </div>
+
           </div>
+
           <div>
+
             <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
               End Date
             </label>
+
             <div class="date-wrapper">
+
               <input
                 type="date"
                 name="end_project"
-                class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red/20"
+                class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white"
                 required
               >
+
               <i class="ti ti-calendar cal-icon"></i>
+
             </div>
-          </div>
-        </div>
 
-        <!-- PRIMARY PERSON IN CHARGE -->
-        <div class="mb-4">
-          <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
-            Primary Person In Charge
-          </label>
-          <div class="relative">
-            <select
-              name="pic_user_id"
-              class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red/20 appearance-none text-gray-700"
-            >
-              <option value="" disabled selected class="text-gray-300">Select a Lead</option>
-              {{-- @foreach($users as $user)
-              <option value="{{ $user->id }}">{{ $user->name }}</option>
-              @endforeach --}}
-            </select>
-            <i class="ti ti-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-          </div>
-        </div>
-
-        <!-- COLLABORATIVE TEAM -->
-        <div class="bg-[#F0EDE8] rounded-2xl p-4 mb-6">
-          <p class="text-sm font-bold text-red mb-0.5">Collaborative Team</p>
-          <p class="text-xs text-gray-400 mb-3">Add members by email.</p>
-
-          <!-- EMAIL INPUT ROW -->
-          <div class="flex gap-2 mb-2">
-            <div class="flex-1 flex items-center gap-2 bg-white border border-black/10 rounded-xl px-3 py-2.5">
-              <i class="ti ti-at text-gray-300 text-base"></i>
-              <input
-                type="email"
-                id="memberEmailInput"
-                placeholder="Email..."
-                class="flex-1 text-sm bg-transparent focus:outline-none text-gray-700 placeholder-gray-300"
-              >
-            </div>
-            <button
-              type="button"
-              id="addMemberBtn"
-              class="bg-red hover:bg-red-dark transition text-white rounded-xl px-4 text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <i class="ti ti-user-plus text-sm"></i>
-              Add
-            </button>
           </div>
 
-          <!-- MEMBER LIST -->
-          <div id="memberList" class="flex flex-col gap-2"></div>
-
-          <!-- Hidden inputs submitted with form -->
-          <div id="memberInputs"></div>
         </div>
 
-        <!-- ACTIONS -->
+        <!-- BUTTON -->
         <div class="flex items-center justify-end gap-3">
+
           <button
             type="button"
             id="closeModal2"
             class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition px-4 py-2.5"
           >
-            Discard
+            Cancel
           </button>
+
           <button
             type="submit"
             class="bg-red hover:bg-red-dark transition text-white rounded-full px-7 py-2.5 text-sm font-bold"
           >
             Create Project
           </button>
+
         </div>
 
       </form>
+
     </div>
   </div>
-  <!-- =================== END MODAL =================== -->
 
   <!-- SCRIPT -->
   <script>
-    // --- Modal open/close ---
-    const modal     = document.getElementById('projectModal');
-    const openBtn   = document.getElementById('openModal');
-    const openCard  = document.getElementById('openModalCard');
-    const closeBtn  = document.getElementById('closeModal');
+
+    const modal = document.getElementById('projectModal');
+
+    const openBtn = document.getElementById('openModal');
+    const openCard = document.getElementById('openModalCard');
+
+    const closeBtn = document.getElementById('closeModal');
     const closeBtn2 = document.getElementById('closeModal2');
 
-    const openModal  = () => modal.classList.remove('hidden');
-    const closeModal = () => modal.classList.add('hidden');
+    function openModal() {
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+    }
 
     openBtn.addEventListener('click', openModal);
     openCard.addEventListener('click', openModal);
+
     closeBtn.addEventListener('click', closeModal);
     closeBtn2.addEventListener('click', closeModal);
 
-    // Close when clicking backdrop
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // --- Collaborative Team ---
-    const addMemberBtn   = document.getElementById('addMemberBtn');
-    const emailInput     = document.getElementById('memberEmailInput');
-    const memberList     = document.getElementById('memberList');
-    const memberInputs   = document.getElementById('memberInputs');
-
-    addMemberBtn.addEventListener('click', addMember);
-    emailInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); addMember(); }
-    });
-
-    function addMember() {
-      const email = emailInput.value.trim();
-      if (!email || !email.includes('@')) return;
-
-      // Prevent duplicate
-      if (memberInputs.querySelector(`[data-email="${CSS.escape(email)}"]`)) {
-        emailInput.value = '';
-        return;
+      if (e.target === modal) {
+        closeModal();
       }
+    });
 
-      const initial = email[0].toUpperCase();
-
-      // Row
-      const row = document.createElement('div');
-      row.className = 'flex items-center gap-3 bg-white border border-black/10 rounded-xl px-3 py-2.5';
-      row.innerHTML = `
-        <div class="w-7 h-7 rounded-full bg-red flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white">${initial}</div>
-        <span class="flex-1 text-sm text-gray-700 truncate">${email}</span>
-        <button type="button" class="text-gray-300 hover:text-red transition remove-member text-sm">
-          <i class="ti ti-x"></i>
-        </button>
-      `;
-      memberList.appendChild(row);
-
-      // Hidden input
-      const hidden = document.createElement('input');
-      hidden.type        = 'hidden';
-      hidden.name        = 'members[]';
-      hidden.value       = email;
-      hidden.dataset.email = email;
-      memberInputs.appendChild(hidden);
-
-      // Remove handler
-      row.querySelector('.remove-member').addEventListener('click', () => {
-        row.remove();
-        memberInputs.querySelector(`[data-email="${email}"]`)?.remove();
-      });
-
-      emailInput.value = '';
-      emailInput.focus();
-    }
   </script>
 
 </body>
 </html>
+```

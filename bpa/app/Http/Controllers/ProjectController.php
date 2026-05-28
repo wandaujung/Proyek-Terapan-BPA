@@ -35,4 +35,39 @@ class ProjectController extends Controller
 
         return redirect()->back();
     }
+
+    public function edit($id)
+    {
+        $project = Project::findOrFail($id);
+
+        return view('edit-project', compact('project'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'start_project' => 'required|date',
+            'end_project' => 'required|date',
+        ]);
+
+        $project = Project::findOrFail($id);
+
+        $project->update([
+            'name' => $request->name,
+            'start_project' => $request->start_project,
+            'end_project' => $request->end_project,
+        ]);
+
+        return redirect()->route('projects');
+    }
+
+    public function destroy($id)
+    {
+        $project = Project::findOrFail($id);
+
+        $project->delete();
+
+        return redirect()->back();
+    }
 }

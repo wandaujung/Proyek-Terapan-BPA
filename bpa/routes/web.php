@@ -7,6 +7,7 @@ use App\Http\Controllers\ProjectController;
 Route::get('/', function () {
     return redirect('/login');
 });
+
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -43,3 +44,15 @@ Route::get('/projects', [ProjectController::class, 'index'])
 Route::post('/projects', [ProjectController::class, 'store'])
     ->middleware('auth')
     ->name('projects.store');
+
+Route::get('/projects/edit/{id}', [ProjectController::class, 'edit'])
+    ->middleware('auth')
+    ->name('projects.edit');
+
+Route::put('/projects/update/{id}', [ProjectController::class, 'update'])
+    ->middleware('auth')
+    ->name('projects.update');
+
+Route::delete('/projects/delete/{id}', [ProjectController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('projects.destroy');
