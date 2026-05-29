@@ -5,36 +5,47 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class ProjectController extends Controller
 {
     public function index()
-    {
-        $projects = Project::where(
-            'division_id',
-            Auth::user()->division_id
-        )->get();
+{
+    $projects = Project::where(
+        'division_id',
+        Auth::user()->division_id
+    )->get();
 
-        return view('projects', compact('projects'));
-    }
+    $users = User::where(
+        'division_id',
+        Auth::user()->division_id
+    )->get();
+
+    return view('projects', compact('projects', 'users'));
+}
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'start_project' => 'required|date',
-            'end_project' => 'required|date',
-        ]);
+{
+    $request->validate([
+        'name' => 'required',
+        'start_project' => 'required|date',
+        'end_project' => 'required|date',
+    ]);
 
-        Project::create([
-            'name' => $request->name,
-            'start_project' => $request->start_project,
-            'end_project' => $request->end_project,
-            'division_id' => Auth::user()->division_id,
-        ]);
+    $project = Project::create([
+        'name' => $request->name,
+        'start_project' => $request->start_project,
+        'end_project' => $request->end_project,
+        'division_id' => Auth::user()->division_id,
+    ]);
 
-        return redirect()->back();
+    // attach members
+    if ($request->members) {
+        $project->members()->attach($request->members);
     }
+
+    return redirect()->back();
+}
 
     public function edit($id)
     {
@@ -70,4 +81,20 @@ class ProjectController extends Controller
 
         return redirect()->back();
     }
+    public function searchUsers(Request $request)
+{
+    $search = $request->search;
+
+    $users = User::where('email', 'LIKE', "%{$search}%")
+        ->limit(5)
+        ->get();
+
+    return response()->json($users);
+}
+public function tasks($id)
+{
+    $project = Project::findOrFail($id);
+
+    return view('task', compact('project'));
+}
 }

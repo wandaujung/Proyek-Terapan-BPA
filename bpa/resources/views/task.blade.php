@@ -4,11 +4,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Planner U – Projects</title>
+  <title>Planner U × BPA – Projects</title>
+    <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+   <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            brand: ['"Bebas Neue"', 'sans-serif'],
+            body:  ['"DM Sans"', 'sans-serif'],
+          },
+          colors: {
+            cream:      '#EDE8E0',
+            sidebar:    '#D9D4CB',
+            'main-bg':  '#FCF9F4',
+            red:        '#C0282D',
+            'red-dark': '#A82025',
+          },
+        },
+      },
+    }
+  </script>
+
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -167,99 +192,96 @@
   </style>
 </head>
 
-<body class="min-h-screen flex">
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    .brand { font-family: 'Bebas Neue', sans-serif; letter-spacing: .06em; }
 
-  <!-- Sidebar -->
-  <aside class="w-56 min-h-screen bg-[#e8e2da] flex flex-col py-6 px-4 shrink-0">
-    <!-- Logo -->
-    <div class="brand-font text-[#b91c1c] text-2xl tracking-wider mb-8 px-2">PLANNER U</div>
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #C0282D55; border-radius: 99px; }
 
-    <!-- New Project Button -->
+    /* Hide default date picker icon on webkit */
+    input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; right: 0; width: 100%; cursor: pointer; }
+    .date-wrapper { position: relative; }
+    .date-wrapper .cal-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #aaa; font-size: 16px; }
+  </style>
+</head>
+
+<body class="flex h-screen overflow-hidden bg-[#FCF9F4] text-[#1A1A1A]">
+
+  <!-- SIDEBAR -->
+  <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5">
+
+    <div class="brand text-3xl text-red px-1">
+      PLANNER U
+    </div>
+
+    <!-- BUTTON OPEN MODAL -->
     <button
-      class="flex items-center justify-center gap-2 bg-[#b91c1c] hover:bg-[#991b1b] text-white text-sm font-semibold rounded-lg py-3 px-4 mb-6 transition-colors">
-      <span class="text-lg leading-none">+</span>
+      id="openModal"
+      class="flex items-center gap-2 bg-red hover:bg-red-dark transition text-white rounded-2xl px-4 py-3 text-sm font-semibold"
+    >
+      <i class="ti ti-plus text-base"></i>
       New Project
     </button>
 
-    <!-- Nav Items -->
+    <!-- NAV -->
     <nav class="flex flex-col gap-1">
-      <a href="#"
-        class="flex items-center gap-3 text-sm text-gray-500 hover:text-gray-800 rounded-lg px-3 py-2 transition-colors">
-        <!-- Dashboard icon -->
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2" />
-          <rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2" />
-          <rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2" />
-          <rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2" />
-        </svg>
+
+      <a href="/dashboard/{{ strtolower(Auth::user()->division->name) }}"
+         class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
+        <i class="ti ti-layout-dashboard text-base"></i>
         Dashboard
       </a>
+
       <a href="#"
-        class="flex items-center gap-3 text-sm text-[#b91c1c] font-semibold bg-white rounded-lg px-3 py-2 shadow-sm">
-        <!-- Projects icon -->
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 7a2 2 0 012-2h3l2 2h9a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-        </svg>
+         class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/50 text-red font-semibold text-sm">
+        <i class="ti ti-folder text-base"></i>
         Projects
       </a>
+
       <a href="#"
-        class="flex items-center gap-3 text-sm text-gray-500 hover:text-gray-800 rounded-lg px-3 py-2 transition-colors">
-        <!-- Bell icon -->
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
+         class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
+        <i class="ti ti-bell text-base"></i>
         Notification
       </a>
+
     </nav>
   </aside>
 
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col min-w-0">
 
-    <!-- Top Navbar -->
-    <header class="bg-[#ede9e3] flex items-center justify-between px-8 py-4 shrink-0">
-      <div class="flex items-center gap-3">
-        <span class="brand-font text-[#b91c1c] text-xl tracking-wider">PLANNER U</span>
-        <span class="text-gray-400 font-light text-lg">×</span>
-        <span class="brand-font text-[#b91c1c] text-xl tracking-wider">BPA</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <!-- Search -->
-        <div class="relative">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-            viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8" stroke-width="2" />
-            <path stroke-linecap="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-          </svg>
-          <input type="text" placeholder="Search projects..."
-            class="pl-9 pr-4 py-2 bg-white rounded-full text-sm text-gray-600 placeholder-gray-400 outline-none border border-transparent focus:border-red-200 w-52 transition-all" />
-        </div>
-        <!-- Bell -->
-        <button
-          class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow transition-shadow">
-          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
-        </button>
-        <!-- Avatar -->
-        <div
-          class="w-9 h-9 rounded-full bg-[#b91c1c] flex items-center justify-center text-white text-xs font-bold shadow-sm">
-          AU
-        </div>
-      </div>
-    </header>
+ <!-- MAIN WRAPPER -->
+<div class="flex-1 flex flex-col overflow-hidden">
 
-    <!-- Page Content -->
-    <main class="flex-1 px-8 pt-2 pb-8 flex flex-col min-w-0 overflow-hidden">
-      <!-- Page Title -->
-      <div class="mb-6">
-        <h1 class="brand-font text-3xl text-gray-800 tracking-wide">PROJECTS</h1>
-        <p class="text-xs text-gray-400 tracking-widest uppercase mt-1">Manage and monitor all projects in the
-          Curriculum Division workspace.</p>
-      </div>
+  <!-- HEADER -->
+  <header class="flex items-center justify-between px-8 py-4 bg-[#FCF9F4] sticky top-0 z-10 flex-shrink-0">
+
+    <div class="flex items-center gap-2">
+      <span class="brand text-2xl text-red">PLANNER U</span>
+      <span class="text-gray-300 font-light text-xl">×</span>
+      <span class="brand text-2xl text-red">BPA</span>
+    </div>
+
+    <div class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none">
+      AD
+    </div>
+
+  </header>
+
+  <!-- CONTENT -->
+  <div class="flex-1 overflow-y-auto px-8 pb-10 flex flex-col gap-5">
+
+    <!-- HEADING -->
+    <div>
+      <h1 class="brand text-4xl tracking-widest">TASK</h1>
+
+      <p class="text-[10px] font-semibold tracking-[.18em] text-gray-400 mt-0.5 uppercase">
+        Manage and monitor all task in the Curriculum Division Workspace.
+      </p>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <main class="flex-1">
 
       <!-- Kanban Board – horizontal scroll -->
       <div class="kanban-scroll flex gap-5 overflow-x-auto pb-4 flex-1">
@@ -891,7 +913,7 @@
       });
     });
   </script>
-
+</main>
 </body>
 
 </html>

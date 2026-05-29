@@ -141,53 +141,115 @@
           </div>
         </div>
 
-        <!-- PROJECT LOOP -->
-        @foreach($projects as $project)
+       <!-- PROJECT LOOP -->
+@foreach($projects as $project)
 
-        <div class="bg-white border border-black/10 rounded-3xl p-6 shadow-sm flex flex-col justify-between min-h-[220px] hover:shadow-md transition cursor-pointer">
+<div
+  onclick="window.location='{{ route('projects.tasks', $project->id) }}'"
+  class="bg-white border border-black/10 rounded-3xl p-6 shadow-sm flex flex-col justify-between min-h-[220px] hover:shadow-md transition cursor-pointer"
+>
+  <!-- TOP -->
+  <div class="flex items-start justify-between">
 
-          <div class="flex flex-col gap-2">
-            <span class="bg-red text-white text-[9px] font-bold px-2.5 py-1 rounded-full w-fit tracking-widest">
-              PROJECT
-            </span>
-            <h3 class="brand text-2xl tracking-wider mt-1 uppercase">
-              {{ $project->name }}
-            </h3>
-            <p class="text-xs text-gray-400 font-medium">
-              Planner U Workspace
-            </p>
-          </div>
+    <div class="flex flex-col gap-2">
 
-          <div class="flex flex-col gap-3 mt-4">
+      <span class="bg-red text-white text-[9px] font-bold px-2.5 py-1 rounded-full w-fit tracking-widest">
+        PROJECT
+      </span>
 
-            <!-- PIC -->
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-full bg-[#D3CEC6] flex items-center justify-center text-[10px] font-bold">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-              </div>
-              <div>
-                <p class="text-[10px] font-bold tracking-wide text-[#1A1A1A] uppercase">
-                  {{ Auth::user()->name }}
-                </p>
-                <p class="text-[9px] text-gray-400 tracking-wide">PERSON IN CHARGE</p>
-              </div>
-            </div>
+      <h3 class="brand text-2xl tracking-wider mt-1 uppercase">
+        {{ $project->name }}
+      </h3>
 
-            <!-- DATE -->
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1.5 text-xs text-gray-500">
-                <i class="ti ti-calendar text-gray-400 text-sm"></i>
-                {{ $project->start_project }} - {{ $project->end_project }}
-              </div>
-              <div class="w-6 h-6 rounded-full bg-[#F0EDE8] flex items-center justify-center">
-                <i class="ti ti-chevron-right text-xs text-gray-500"></i>
-              </div>
-            </div>
+      <p class="text-xs text-gray-400 font-medium">
+        Planner U Workspace
+      </p>
 
-          </div>
-        </div>
+    </div>
 
-        @endforeach
+    <!-- ACTION -->
+    <div class="flex items-center gap-2">
+
+      <!-- EDIT BUTTON -->
+      <button
+      onclick="event.stopPropagation()"
+        openEditModal(
+          '{{ $project->id }}',
+          '{{ $project->name }}',
+          '{{ $project->start_project }}',
+          '{{ $project->end_project }}'
+        )"
+        class="w-9 h-9 rounded-full bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition"
+      >
+        <i class="ti ti-edit text-blue-500 text-sm"></i>
+      </button>
+
+      <!-- DELETE -->
+      <form
+      onclick="event.stopPropagation()"
+        action="{{ route('projects.destroy', $project->id) }}"
+        method="POST"
+        onsubmit="return confirm('Delete this project?')"
+      >
+        @csrf
+        @method('DELETE')
+
+        <button
+          type="submit"
+          class="w-9 h-9 rounded-full bg-red-50 hover:bg-red-100 flex items-center justify-center transition"
+        >
+          <i class="ti ti-trash text-red text-sm"></i>
+        </button>
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="flex flex-col gap-3 mt-4">
+
+    <!-- PIC -->
+    <div class="flex items-center gap-2.5">
+
+      <div class="w-8 h-8 rounded-full bg-[#D3CEC6] flex items-center justify-center text-[10px] font-bold">
+        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+      </div>
+
+      <div>
+        <p class="text-[10px] font-bold tracking-wide text-[#1A1A1A] uppercase">
+          {{ Auth::user()->name }}
+        </p>
+
+        <p class="text-[9px] text-gray-400 tracking-wide">
+          PERSON IN CHARGE
+        </p>
+      </div>
+
+    </div>
+
+    <!-- DATE -->
+    <div class="flex items-center justify-between">
+
+      <div class="flex items-center gap-1.5 text-xs text-gray-500">
+        <i class="ti ti-calendar text-gray-400 text-sm"></i>
+
+        {{ $project->start_project }}
+        -
+        {{ $project->end_project }}
+      </div>
+
+      <div class="w-6 h-6 rounded-full bg-[#F0EDE8] flex items-center justify-center">
+        <i class="ti ti-chevron-right text-xs text-gray-500"></i>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+@endforeach
 
       </div>
     </div>
@@ -260,24 +322,7 @@
           </div>
         </div>
 
-        <!-- PRIMARY PERSON IN CHARGE -->
-        <div class="mb-4">
-          <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
-            Primary Person In Charge
-          </label>
-          <div class="relative">
-            <select
-              name="pic_user_id"
-              class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-red/20 appearance-none text-gray-700"
-            >
-              <option value="" disabled selected class="text-gray-300">Select a Lead</option>
-              {{-- @foreach($users as $user)
-              <option value="{{ $user->id }}">{{ $user->name }}</option>
-              @endforeach --}}
-            </select>
-            <i class="ti ti-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-          </div>
-        </div>
+        
 
         <!-- COLLABORATIVE TEAM -->
         <div class="bg-[#F0EDE8] rounded-2xl p-4 mb-6">
@@ -289,12 +334,16 @@
             <div class="flex-1 flex items-center gap-2 bg-white border border-black/10 rounded-xl px-3 py-2.5">
               <i class="ti ti-at text-gray-300 text-base"></i>
               <input
-                type="email"
-                id="memberEmailInput"
-                placeholder="Email..."
-                class="flex-1 text-sm bg-transparent focus:outline-none text-gray-700 placeholder-gray-300"
-              >
+  type="text"
+  id="memberSearch"
+  placeholder="Search email..."
+  class="flex-1 text-sm bg-transparent focus:outline-none text-gray-700 placeholder-gray-300"
+>
             </div>
+            <div
+  id="searchResults"
+  class="bg-white rounded-xl mt-2 border border-black/10 hidden overflow-hidden"
+></div>
             <button
               type="button"
               id="addMemberBtn"
@@ -333,82 +382,296 @@
     </div>
   </div>
   <!-- =================== END MODAL =================== -->
+  <!-- ===================== EDIT MODAL ===================== -->
+<div
+  id="editModal"
+  class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+>
+  <div class="bg-[#FAF8F5] rounded-3xl p-7 w-[480px] shadow-2xl">
+
+    <div class="flex items-start justify-between mb-6">
+
+      <div>
+        <p class="text-[10px] font-bold tracking-[.15em] text-blue-500 uppercase mb-1">
+          Edit Entry
+        </p>
+
+        <h2 class="brand text-3xl tracking-wide">
+          Edit Project
+        </h2>
+      </div>
+
+      <button id="closeEditModal" class="text-gray-400 hover:text-gray-700 transition text-xl mt-1">
+        <i class="ti ti-x"></i>
+      </button>
+
+    </div>
+
+    <form id="editForm" method="POST">
+
+      @csrf
+      @method('PUT')
+
+      <!-- PROJECT NAME -->
+      <div class="mb-4">
+
+        <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
+          Project Name
+        </label>
+
+        <input
+          type="text"
+          name="name"
+          id="edit_name"
+          class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white"
+          required
+        >
+
+      </div>
+
+      <!-- DATE -->
+      <div class="grid grid-cols-2 gap-3 mb-4">
+
+        <div>
+
+          <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
+            Start Date
+          </label>
+
+          <input
+            type="date"
+            name="start_project"
+            id="edit_start"
+            class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white"
+            required
+          >
+
+        </div>
+
+        <div>
+
+          <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
+            End Date
+          </label>
+
+          <input
+            type="date"
+            name="end_project"
+            id="edit_end"
+            class="w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white"
+            required
+          >
+
+        </div>
+
+      </div>
+
+      <!-- BUTTON -->
+      <div class="flex items-center justify-end gap-3">
+
+        <button
+          type="button"
+          id="closeEditModal2"
+          class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition px-4 py-2.5"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-600 transition text-white rounded-full px-7 py-2.5 text-sm font-bold"
+        >
+          Update Project
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
 
   <!-- SCRIPT -->
-  <script>
-    // --- Modal open/close ---
-    const modal     = document.getElementById('projectModal');
-    const openBtn   = document.getElementById('openModal');
-    const openCard  = document.getElementById('openModalCard');
-    const closeBtn  = document.getElementById('closeModal');
-    const closeBtn2 = document.getElementById('closeModal2');
+<script>
 
-    const openModal  = () => modal.classList.remove('hidden');
-    const closeModal = () => modal.classList.add('hidden');
+  // =========================
+  // ADD MODAL
+  // =========================
+  const modal     = document.getElementById('projectModal');
+  const openBtn   = document.getElementById('openModal');
+  const openCard  = document.getElementById('openModalCard');
+  const closeBtn  = document.getElementById('closeModal');
+  const closeBtn2 = document.getElementById('closeModal2');
 
-    openBtn.addEventListener('click', openModal);
-    openCard.addEventListener('click', openModal);
-    closeBtn.addEventListener('click', closeModal);
-    closeBtn2.addEventListener('click', closeModal);
+  const openModal = () => {
+    modal.classList.remove('hidden');
+  }
 
-    // Close when clicking backdrop
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
+  const closeModal = () => {
+    modal.classList.add('hidden');
+  }
 
-    // --- Collaborative Team ---
-    const addMemberBtn   = document.getElementById('addMemberBtn');
-    const emailInput     = document.getElementById('memberEmailInput');
-    const memberList     = document.getElementById('memberList');
-    const memberInputs   = document.getElementById('memberInputs');
+  openBtn.addEventListener('click', openModal);
+  openCard.addEventListener('click', openModal);
 
-    addMemberBtn.addEventListener('click', addMember);
-    emailInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); addMember(); }
-    });
+  closeBtn.addEventListener('click', closeModal);
+  closeBtn2.addEventListener('click', closeModal);
 
-    function addMember() {
-      const email = emailInput.value.trim();
-      if (!email || !email.includes('@')) return;
-
-      // Prevent duplicate
-      if (memberInputs.querySelector(`[data-email="${CSS.escape(email)}"]`)) {
-        emailInput.value = '';
-        return;
-      }
-
-      const initial = email[0].toUpperCase();
-
-      // Row
-      const row = document.createElement('div');
-      row.className = 'flex items-center gap-3 bg-white border border-black/10 rounded-xl px-3 py-2.5';
-      row.innerHTML = `
-        <div class="w-7 h-7 rounded-full bg-red flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white">${initial}</div>
-        <span class="flex-1 text-sm text-gray-700 truncate">${email}</span>
-        <button type="button" class="text-gray-300 hover:text-red transition remove-member text-sm">
-          <i class="ti ti-x"></i>
-        </button>
-      `;
-      memberList.appendChild(row);
-
-      // Hidden input
-      const hidden = document.createElement('input');
-      hidden.type        = 'hidden';
-      hidden.name        = 'members[]';
-      hidden.value       = email;
-      hidden.dataset.email = email;
-      memberInputs.appendChild(hidden);
-
-      // Remove handler
-      row.querySelector('.remove-member').addEventListener('click', () => {
-        row.remove();
-        memberInputs.querySelector(`[data-email="${email}"]`)?.remove();
-      });
-
-      emailInput.value = '';
-      emailInput.focus();
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
     }
-  </script>
+  });
+
+  // =========================
+  // COLLABORATIVE TEAM
+  // =========================
+const users = @json($users);
+
+const memberSearch = document.getElementById('memberSearch');
+const searchResults = document.getElementById('searchResults');
+
+const memberList = document.getElementById('memberList');
+const memberInputs = document.getElementById('memberInputs');
+
+memberSearch.addEventListener('input', function () {
+
+  const keyword = this.value.toLowerCase();
+
+  searchResults.innerHTML = '';
+
+  if (keyword.length < 1) {
+    searchResults.classList.add('hidden');
+    return;
+  }
+
+  const filtered = users.filter(user =>
+    user.email.toLowerCase().includes(keyword)
+  );
+
+  filtered.forEach(user => {
+
+    const item = document.createElement('button');
+
+    item.type = 'button';
+
+    item.className =
+      'w-full text-left px-4 py-3 hover:bg-red/5 border-b border-black/5 text-sm';
+
+    item.innerHTML = `
+      <div class="font-semibold">${user.name}</div>
+      <div class="text-xs text-gray-400">${user.email}</div>
+    `;
+
+    item.onclick = () => addMember(user);
+
+    searchResults.appendChild(item);
+  });
+
+  searchResults.classList.remove('hidden');
+});
+
+function addMember(user)
+{
+  // prevent duplicate
+  if (
+    memberInputs.querySelector(`[value="${user.id}"]`)
+  ) return;
+
+  const row = document.createElement('div');
+
+  row.className =
+    'flex items-center gap-3 bg-white border border-black/10 rounded-xl px-3 py-2.5';
+
+  row.innerHTML = `
+    <div class="w-7 h-7 rounded-full bg-red flex items-center justify-center text-[10px] font-bold text-white">
+      ${user.name.charAt(0).toUpperCase()}
+    </div>
+
+    <div class="flex-1">
+      <p class="text-sm font-semibold">${user.name}</p>
+      <p class="text-xs text-gray-400">${user.email}</p>
+    </div>
+
+    <button
+      type="button"
+      class="remove-member text-gray-400 hover:text-red"
+    >
+      <i class="ti ti-x"></i>
+    </button>
+  `;
+
+  memberList.appendChild(row);
+
+  // hidden input
+  const hidden = document.createElement('input');
+
+  hidden.type = 'hidden';
+  hidden.name = 'members[]';
+  hidden.value = user.id;
+
+  memberInputs.appendChild(hidden);
+
+  // remove
+  row.querySelector('.remove-member')
+    .addEventListener('click', () => {
+      row.remove();
+      hidden.remove();
+    });
+
+  memberSearch.value = '';
+  searchResults.innerHTML = '';
+  searchResults.classList.add('hidden');
+}
+
+  // =========================
+  // EDIT MODAL
+  // =========================
+  const editModal = document.getElementById('editModal');
+
+  const closeEditModalBtn =
+    document.getElementById('closeEditModal');
+
+  const closeEditModalBtn2 =
+    document.getElementById('closeEditModal2');
+
+  function openEditModal(id, name, start, end) {
+
+    editModal.classList.remove('hidden');
+
+    document.getElementById('edit_name').value = name;
+
+    document.getElementById('edit_start').value = start;
+
+    document.getElementById('edit_end').value = end;
+
+    document.getElementById('editForm').action =
+      `/projects/update/${id}`;
+  }
+
+  function closeEditModal() {
+    editModal.classList.add('hidden');
+  }
+
+  closeEditModalBtn.addEventListener(
+    'click',
+    closeEditModal
+  );
+
+  closeEditModalBtn2.addEventListener(
+    'click',
+    closeEditModal
+  );
+
+  // Close edit modal when clicking backdrop
+  editModal.addEventListener('click', (e) => {
+    if (e.target === editModal) {
+      closeEditModal();
+    }
+  });
+
+</script>
+  
 
 </body>
 </html>

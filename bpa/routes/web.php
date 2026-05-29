@@ -56,3 +56,7 @@ Route::put('/projects/update/{id}', [ProjectController::class, 'update'])
 Route::delete('/projects/delete/{id}', [ProjectController::class, 'destroy'])
     ->middleware('auth')
     ->name('projects.destroy');
+
+    Route::get('/projects/{id}/tasks', [ProjectController::class, 'tasks'])
+    ->middleware('auth')
+    ->name('projects.tasks');
