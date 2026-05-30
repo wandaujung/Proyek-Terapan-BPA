@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <title>Planner U × BPA – Projects</title>
     <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,6 +14,9 @@
 
   <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <!-- SortableJS -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
    <script>
     tailwind.config = {
@@ -293,22 +297,25 @@
             <span class="w-2.5 h-2.5 rounded-full bg-gray-400 inline-block"></span>
             <span class="text-xs font-semibold text-gray-500 tracking-widest uppercase">To Do</span>
             <span id="count-todo"
-              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">1</span>
+              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">{{ $todoTasks->count() }}</span>
           </div>
 
           <!-- Sortable card area -->
           <div id="col-todo" class="flex flex-col gap-3">
-            <div onclick="openDetailModal('Proyek PM', 'Oct 12 – Oct 22')"
+            @foreach($todoTasks as $task)
+            <div data-task-id="{{ $task->id }}"
+              onclick="openDetailModal({{ $task }})"
               class="task-card bg-white rounded-xl p-4 shadow-sm border-l-4 hover:shadow-md transition-shadow">
-              <p class="font-semibold text-sm text-gray-800">Proyek PM</p>
+              <p class="font-semibold text-sm text-gray-800">{{ $task->title }}</p>
               <div class="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
                   <path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
-                Oct 12 – Oct 22
+                {{ $task->start_date }} – {{ $task->end_date }}
               </div>
-            </div><!-- end card -->
+            </div>
+            @endforeach
           </div><!-- end col-todo -->
 
           <!-- Add Task Button -->
@@ -325,35 +332,25 @@
             <span class="w-2.5 h-2.5 rounded-full bg-[#DA8289] inline-block"></span>
             <span class="text-xs font-semibold text-gray-500 tracking-widest uppercase">In Progress</span>
             <span id="count-progress"
-              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">2</span>
+              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">{{ $progressTasks->count() }}</span>
           </div>
 
           <!-- Sortable card area -->
           <div id="col-progress" class="flex flex-col gap-3">
-            <div onclick="openDetailModal('Desain UI Dashboard', 'Oct 10 – Oct 25')"
+            @foreach($progressTasks as $task)
+            <div data-task-id="{{ $task->id }}"
+              onclick="openDetailModal({{ $task }})"
               class="task-card bg-white rounded-xl p-4 shadow-sm border-l-4 hover:shadow-md transition-shadow">
-              <p class="font-semibold text-sm text-gray-800">Desain UI Dashboard</p>
+              <p class="font-semibold text-sm text-gray-800">{{ $task->title }}</p>
               <div class="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
                   <path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
-                Oct 10 – Oct 25
+                {{ $task->start_date }} – {{ $task->end_date }}
               </div>
             </div>
-
-            <!-- Task Card 2 -->
-            <div onclick="openDetailModal('Integrasi API Backend', 'Oct 14 – Oct 28')"
-              class="task-card bg-white rounded-xl p-4 shadow-sm border-l-4 hover:shadow-md transition-shadow">
-              <p class="font-semibold text-sm text-gray-800">Integrasi API Backend</p>
-              <div class="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
-                  <path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-                Oct 14 – Oct 28
-              </div>
-            </div><!-- end card -->
+            @endforeach
           </div><!-- end col-progress -->
 
         </div><!-- end IN PROGRESS column -->
@@ -365,22 +362,25 @@
             <span class="w-2.5 h-2.5 rounded-full bg-[#b91c1c] inline-block"></span>
             <span class="text-xs font-semibold text-gray-500 tracking-widest uppercase">Under Review</span>
             <span id="count-review"
-              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">1</span>
+              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">{{ $reviewTasks->count() }}</span>
           </div>
 
           <!-- Sortable card area -->
           <div id="col-review" class="flex flex-col gap-3">
-            <div onclick="openDetailModal('Laporan Akhir BPA', 'Oct 20 – Oct 30')"
+            @foreach($reviewTasks as $task)
+            <div data-task-id="{{ $task->id }}"
+              onclick="openDetailModal({{ $task }})"
               class="task-card bg-white rounded-xl p-4 shadow-sm border-l-4 hover:shadow-md transition-shadow">
-              <p class="font-semibold text-sm text-gray-800">Laporan Akhir BPA</p>
+              <p class="font-semibold text-sm text-gray-800">{{ $task->title }}</p>
               <div class="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
                   <path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
-                Oct 20 – Oct 30
+                {{ $task->start_date }} – {{ $task->end_date }}
               </div>
             </div>
+            @endforeach
           </div><!-- end col-review -->
 
           <!-- Submit Button -->
@@ -401,40 +401,32 @@
             <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
             <span class="text-xs font-semibold text-gray-500 tracking-widest uppercase">Done</span>
             <span id="count-done"
-              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">1</span>
+              class="ml-auto text-xs bg-gray-200 text-gray-500 rounded-full px-2 py-0.5 font-medium">{{ $doneTasks->count() }}</span>
           </div>
 
           <!-- Sortable card area -->
           <div id="col-done" class="flex flex-col gap-3">
-            <div onclick="openDetailModal('Laporan Akhir BPA', 'Oct 20 – Oct 30')"
+            @foreach($doneTasks as $task)
+            <div data-task-id="{{ $task->id }}"
+              onclick="openDetailModal({{ $task }})"
               class="task-card bg-white rounded-xl p-4 shadow-sm border-l-4 flex items-start justify-between hover:shadow-md transition-shadow">
-
-              <!-- Left Content -->
               <div>
-                <p class="font-semibold text-sm text-gray-400 line-through">
-                  Laporan Akhir BPA
-                </p>
-
+                <p class="font-semibold text-sm text-gray-400 line-through">{{ $task->title }}</p>
                 <div class="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
                     <path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
                   </svg>
-
-                  <span class="line-through">
-                    Oct 20 – Oct 30
-                  </span>
+                  <span class="line-through">{{ $task->start_date }} – {{ $task->end_date }}</span>
                 </div>
               </div>
-
-              <!-- Checklist -->
               <div class="bg-green-100 p-2 rounded-full">
                 <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-
             </div>
+            @endforeach
           </div><!-- end col-done -->
 
         </div>
@@ -443,9 +435,10 @@
     </main>
   </div><!-- end main -->
 
-  <!-- Task Detail Modal -->
   <div id="detailModal" class="modal-overlay" onclick="handleDetailOverlayClick(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
+    <form id="detailForm" method="POST" action="" class="modal-box" onclick="event.stopPropagation()">
+      @csrf
+      @method('PUT')
 
       <!-- Modal Header -->
       <div class="px-8 pt-8 pb-6 border-b border-gray-200">
@@ -468,13 +461,13 @@
         <!-- Task Title -->
         <div>
           <label class="modal-label">Task Title</label>
-          <input id="detailTaskTitle" type="text" placeholder="What needs to be done?" class="modal-input" />
+          <input id="detailTaskTitle" name="title" type="text" placeholder="What needs to be done?" class="modal-input" />
         </div>
 
         <!-- Description -->
         <div>
           <label class="modal-label">Description</label>
-          <textarea rows="4" placeholder="Briefly describe the objectives and constraints..."
+          <textarea id="detailTaskDesc" name="description" rows="4" placeholder="Briefly describe the objectives and constraints..."
             class="modal-input resize-none"></textarea>
         </div>
 
@@ -495,6 +488,20 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
+            <!-- Start Date -->
+            <div>
+              <label class="modal-label">Start Date</label>
+              <div class="relative">
+                <input id="detailTaskStart" type="date" name="start_date" class="modal-input pr-9" />
+              </div>
+            </div>
+            <!-- End Date -->
+            <div>
+              <label class="modal-label">End Date</label>
+              <div class="relative">
+                <input id="detailTaskEnd" type="date" name="end_date" class="modal-input pr-9" />
+              </div>
+            </div>
           </div>
           <!-- Brief Link -->
           <div>
@@ -504,7 +511,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
-              <input type="url" placeholder="Paste Google Drive or OneDrive link here..."
+              <input id="detailTaskBrief" name="brief_link" type="url" placeholder="Paste Google Drive or OneDrive link here..."
                 class="bg-transparent border-none outline-none text-xs text-gray-600 placeholder-gray-400 flex-1 font-['Inter']" />
             </div>
           </div>
@@ -516,7 +523,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
-              <input type="url" placeholder="Paste Google Drive or OneDrive link here..."
+              <input id="detailTaskSubmission" name="submission_link" type="url" placeholder="Paste Google Drive or OneDrive link here..."
                 class="bg-transparent border-none outline-none text-xs text-gray-600 placeholder-gray-400 flex-1 font-['Inter']" />
             </div>
           </div>
@@ -526,7 +533,7 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <label class="modal-label mb-0">Sub-Tasks</label>
-            <button onclick="toggleDetailSubTaskForm()"
+            <button type="button" onclick="toggleDetailSubTaskForm()"
               class="flex items-center gap-1 text-xs font-semibold text-[#b91c1c] hover:text-[#991b1b] transition-colors">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -541,9 +548,9 @@
             <input id="detailSubTaskInput" type="text" placeholder="e.g., Finalize character sketches"
               class="modal-input mb-4" />
             <div class="flex justify-end gap-2">
-              <button onclick="toggleDetailSubTaskForm()"
+              <button type="button" onclick="toggleDetailSubTaskForm()"
                 class="text-xs text-gray-500 hover:text-gray-700 font-semibold px-4 py-2 rounded-lg transition-colors">Cancel</button>
-              <button onclick="addDetailSubTask()"
+              <button type="button" onclick="addDetailSubTask()"
                 class="text-xs bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold px-4 py-2 rounded-lg transition-colors">Add
                 Sub-task</button>
             </div>
@@ -551,30 +558,7 @@
 
           <!-- Sub-task List -->
           <div id="detailSubTaskList" class="flex flex-col gap-2">
-            <div class="flex items-center gap-3 py-2.5 px-1 border-b border-gray-100">
-              <svg class="w-4 h-4 text-gray-300 shrink-0 cursor-grab" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-              </svg>
-              <div class="subtask-check" onclick="toggleCheck(this)">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span class="subtask-text text-sm text-gray-700 flex-1">Draft initial outline</span>
-            </div>
-            <div class="flex items-center gap-3 py-2.5 px-1">
-              <svg class="w-4 h-4 text-gray-300 shrink-0 cursor-grab" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-              </svg>
-              <div class="subtask-check" onclick="toggleCheck(this)">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span class="subtask-text text-sm text-gray-700 flex-1">Coordinate with art department</span>
-            </div>
+            <!-- Populated via JS -->
           </div>
         </div>
 
@@ -582,13 +566,13 @@
 
       <!-- Modal Footer -->
       <div class="px-8 py-5 border-t border-gray-200 flex items-center justify-end gap-3">
-        <button onclick="closeDetailModal()"
+        <button type="button" onclick="closeDetailModal()"
           class="text-sm text-gray-500 hover:text-gray-700 font-semibold px-5 py-2.5 rounded-xl transition-colors">Cancel</button>
-        <button
+        <button type="submit"
           class="text-sm bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold px-6 py-2.5 rounded-xl transition-colors shadow-sm">Save</button>
       </div>
 
-    </div>
+    </form>
   </div>
 
   <!-- Submit Modal -->
@@ -648,6 +632,9 @@
   <div id="taskModal" class="modal-overlay" onclick="handleOverlayClick(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
 
+<form action="{{ route('tasks.store') }}" method="POST">
+    @csrf
+    <input type="hidden" name="project_id" value="{{ $project->id }}" />
       <!-- Modal Header -->
       <div class="px-8 pt-8 pb-6 border-b border-gray-200">
         <div class="flex items-start justify-between">
@@ -669,13 +656,13 @@
         <!-- Task Title -->
         <div>
           <label class="modal-label">Task Title</label>
-          <input type="text" placeholder="What needs to be done?" class="modal-input" />
+          <input type="text"  name="title" placeholder="What needs to be done?" class="modal-input" />
         </div>
 
         <!-- Description -->
         <div>
           <label class="modal-label">Description</label>
-          <textarea rows="4" placeholder="Briefly describe the objectives and constraints..."
+          <textarea rows="4"  name="description" placeholder="Briefly describe the objectives and constraints..."
             class="modal-input resize-none"></textarea>
         </div>
 
@@ -701,14 +688,14 @@
           <div>
             <label class="modal-label">Start Date</label>
             <div class="relative">
-              <input type="date" class="modal-input pr-9" />
+              <input type="date"  name="start_date" class="modal-input pr-9" />
             </div>
           </div>
           <!-- End Date -->
           <div>
             <label class="modal-label">End Date</label>
             <div class="relative">
-              <input type="date" class="modal-input pr-9" />
+              <input type="date" name="end_date" class="modal-input pr-9" />
             </div>
           </div>
         </div>
@@ -721,7 +708,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
-            <input type="url" placeholder="Paste Google Drive or OneDrive link here..."
+            <input type="url"  name="brief_link" placeholder="Paste Google Drive or OneDrive link here..."
               class="bg-transparent border-none outline-none text-sm text-gray-600 placeholder-gray-400 flex-1 font-['Inter']" />
           </div>
         </div>
@@ -730,7 +717,7 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <label class="modal-label mb-0">Sub-Tasks</label>
-            <button onclick="toggleSubTaskForm()"
+            <button type="button" onclick="toggleSubTaskForm()"
               class="flex items-center gap-1 text-xs font-semibold text-[#b91c1c] hover:text-[#991b1b] transition-colors">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -745,9 +732,9 @@
             <input id="subTaskInput" type="text" placeholder="e.g., Finalize character sketches"
               class="modal-input mb-4" />
             <div class="flex justify-end gap-2">
-              <button onclick="toggleSubTaskForm()"
+              <button type="button" onclick="toggleSubTaskForm()"
                 class="text-xs text-gray-500 hover:text-gray-700 font-semibold px-4 py-2 rounded-lg transition-colors">Cancel</button>
-              <button onclick="addSubTask()"
+              <button type="button" onclick="addSubTask()"
                 class="text-xs bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold px-4 py-2 rounded-lg transition-colors">Add
                 Sub-task</button>
             </div>
@@ -759,15 +746,15 @@
 
       </div>
 
-      <!-- Modal Footer -->
       <div class="px-8 py-5 border-t border-gray-200 flex items-center justify-end gap-3">
-        <button onclick="closeModal()"
+        <button type="button" onclick="closeModal()"
           class="text-sm text-gray-500 hover:text-gray-700 font-semibold px-5 py-2.5 rounded-xl transition-colors">Cancel</button>
         <button
+          type="submit"
           class="text-sm bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold px-6 py-2.5 rounded-xl transition-colors shadow-sm">Create
           Task</button>
+           </form>
       </div>
-
     </div>
   </div>
 
@@ -797,13 +784,16 @@
       const list = document.getElementById('subTaskList');
       const item = document.createElement('div');
       item.className = 'flex items-center gap-3 py-2.5 px-1 border-b border-gray-100 last:border-0';
+      const uniqueId = 'subtask_' + Date.now() + Math.floor(Math.random() * 1000);
       item.innerHTML = `
         <svg class="w-4 h-4 text-gray-300 shrink-0 cursor-grab" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
         </svg>
         <div class="w-4 h-4 rounded-full border-2 border-gray-300 shrink-0"></div>
         <span class="text-sm text-gray-700 flex-1">${title}</span>
-        <button onclick="this.closest('div').remove()" class="text-gray-300 hover:text-red-400 transition-colors">
+        <input type="hidden" name="subtasks[${uniqueId}][title]" value="${title}">
+        <input type="hidden" name="subtasks[${uniqueId}][is_completed]" value="0">
+        <button type="button" onclick="this.closest('div').remove()" class="text-gray-300 hover:text-red-400 transition-colors">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -814,9 +804,24 @@
       toggleSubTaskForm();
     }
     // Detail Modal
-    function openDetailModal(title, date) {
-      document.getElementById('detailModalTitle').textContent = title;
-      document.getElementById('detailTaskTitle').value = title;
+    function openDetailModal(task) {
+      document.getElementById('detailForm').action = `/tasks/update/${task.id}`;
+      document.getElementById('detailModalTitle').textContent = task.title;
+      document.getElementById('detailTaskTitle').value = task.title;
+      document.getElementById('detailTaskDesc').value = task.description || '';
+      document.getElementById('detailTaskStart').value = task.start_date || '';
+      document.getElementById('detailTaskEnd').value = task.end_date || '';
+      document.getElementById('detailTaskBrief').value = task.brief_link || '';
+      document.getElementById('detailTaskSubmission').value = task.submission_link || '';
+
+      const subtaskList = document.getElementById('detailSubTaskList');
+      subtaskList.innerHTML = '';
+      if (task.sub_tasks) {
+          task.sub_tasks.forEach(sub => {
+              addDetailSubTaskDOM(sub.title, sub.is_completed);
+          });
+      }
+
       document.getElementById('detailModal').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -834,35 +839,50 @@
         document.getElementById('detailSubTaskInput').focus();
       }
     }
-    function toggleCheck(el) {
+    function toggleCheck(el, uniqueId) {
       el.classList.toggle('checked');
       const label = el.nextElementSibling;
       if (label && label.classList.contains('subtask-text')) {
         label.classList.toggle('checked');
       }
+      if (uniqueId) {
+        const input = document.getElementById(uniqueId + '_completed');
+        if (input) {
+          input.value = el.classList.contains('checked') ? 1 : 0;
+        }
+      }
     }
-    function addDetailSubTask() {
-      const input = document.getElementById('detailSubTaskInput');
-      const title = input.value.trim();
-      if (!title) return;
+
+    function addDetailSubTaskDOM(title, isCompleted = false) {
       const list = document.getElementById('detailSubTaskList');
       const item = document.createElement('div');
       item.className = 'flex items-center gap-3 py-2.5 px-1 border-b border-gray-100';
+      const checkedClass = isCompleted ? 'checked' : '';
+      const uniqueId = 'subtask_' + Date.now() + Math.floor(Math.random() * 1000);
       item.innerHTML = `
         <svg class="w-4 h-4 text-gray-300 shrink-0 cursor-grab" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
         </svg>
-        <div class="subtask-check" onclick="toggleCheck(this)">
+        <div class="subtask-check ${checkedClass}" onclick="toggleCheck(this, '${uniqueId}')">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
         </div>
-        <span class="subtask-text text-sm text-gray-700 flex-1">${title}</span>
-        <button onclick="this.closest('div').remove()" class="text-gray-300 hover:text-red-400 transition-colors">
+        <span class="subtask-text text-sm text-gray-700 flex-1 ${checkedClass}">${title}</span>
+        <input type="hidden" name="subtasks[${uniqueId}][title]" value="${title}">
+        <input type="hidden" id="${uniqueId}_completed" name="subtasks[${uniqueId}][is_completed]" value="${isCompleted ? 1 : 0}">
+        <button type="button" onclick="this.closest('div').remove()" class="text-gray-300 hover:text-red-400 transition-colors">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       `;
       list.appendChild(item);
+    }
+
+    function addDetailSubTask() {
+      const input = document.getElementById('detailSubTaskInput');
+      const title = input.value.trim();
+      if (!title) return;
+      addDetailSubTaskDOM(title);
       input.value = '';
       toggleDetailSubTaskForm();
     }
@@ -885,6 +905,12 @@
     });
 
     // Drag & Drop — SortableJS
+    const statusMap = {
+      'col-todo': 'todo',
+      'col-progress': 'progress',
+      'col-review': 'review',
+      'col-done': 'done',
+    };
     const colIds = [
       { id: 'col-todo', counter: 'count-todo' },
       { id: 'col-progress', counter: 'count-progress' },
@@ -903,13 +929,26 @@
       const el = document.getElementById(id);
       if (!el) return;
       Sortable.create(el, {
-        group: 'tasks',          // shared group — drag between columns
-        animation: 150,          // smooth animation ms
+        group: 'tasks',
+        animation: 150,
         ghostClass: 'sortable-ghost',
         dragClass: 'sortable-drag',
-        delay: 80,               // slight delay to not conflict with click
+        delay: 80,
         delayOnTouchOnly: true,
-        onEnd() { updateCounters(); },
+        onEnd(evt) {
+          updateCounters();
+          const taskId = evt.item.dataset.taskId;
+          const newStatus = statusMap[evt.to.id];
+          if (!taskId || !newStatus) return;
+          fetch(`/tasks/status/${taskId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ status: newStatus }),
+          });
+        },
       });
     });
   </script>

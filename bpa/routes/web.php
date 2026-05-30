@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -60,3 +61,27 @@ Route::delete('/projects/delete/{id}', [ProjectController::class, 'destroy'])
     Route::get('/projects/{id}/tasks', [ProjectController::class, 'tasks'])
     ->middleware('auth')
     ->name('projects.tasks');
+
+    Route::post('/tasks/store',
+    [TaskController::class,'store'])
+    ->name('tasks.store');
+
+Route::put('/tasks/update/{task}',
+    [TaskController::class,'update'])
+    ->name('tasks.update');
+
+Route::post('/tasks/submit/{task}',
+    [TaskController::class,'submit'])
+    ->name('tasks.submit');
+
+Route::post('/tasks/approve/{task}',
+    [TaskController::class,'approve'])
+    ->name('tasks.approve');
+
+Route::post('/tasks/revision/{task}',
+    [TaskController::class,'revision'])
+    ->name('tasks.revision');
+
+Route::post('/tasks/status/{task}',
+    [TaskController::class,'updateStatus'])
+    ->name('tasks.status');

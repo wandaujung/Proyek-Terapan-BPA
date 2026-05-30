@@ -18,7 +18,12 @@ class Project extends Model
         return $this->belongsTo(Division::class);
     }
     public function members()
-{
-    return $this->belongsToMany(User::class, 'project_members');
-}
+    {
+        return $this->belongsToMany(User::class, 'project_members');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

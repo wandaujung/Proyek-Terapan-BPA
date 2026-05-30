@@ -93,8 +93,13 @@ class ProjectController extends Controller
 }
 public function tasks($id)
 {
-    $project = Project::findOrFail($id);
+    $project = Project::with('tasks.subTasks')->findOrFail($id);
 
-    return view('task', compact('project'));
+    $todoTasks     = $project->tasks->where('status', 'todo');
+    $progressTasks = $project->tasks->where('status', 'progress');
+    $reviewTasks   = $project->tasks->where('status', 'review');
+    $doneTasks     = $project->tasks->where('status', 'done');
+
+    return view('task', compact('project', 'todoTasks', 'progressTasks', 'reviewTasks', 'doneTasks'));
 }
 }
