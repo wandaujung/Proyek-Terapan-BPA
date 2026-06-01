@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Auth;
+use App\Models\Project;
+use App\Models\Task;
+use App\Models\User;
+use Carbon\Carbon;
+
+class StaffDashboardController extends Controller
+{
+    public function show()
+    {
+        $user = Auth::user();
+        $divisionId = $user->division_id;
+        $divisionName = strtolower($user->division->name ?? 'ac');
+
+        // === STAT CARDS ===
+
+        // Active Projects: projects in this division that have at least one non-done task
+        $projects = Project::where('division_id', $divisionId)->with('tasks')->get();
+
+        $activeProjects = $projects->filter(function ($p) {
+            return $p->tasks->where('status', '!=', 'done')->count() > 0;
+        })->count();
+
+        // Total tasks in this division
+        $allTasks = Task::whereHas('project', fn($q) => $q->where('division_id', $divisionId))->get();
+        $totalTasks = $allTasks->count();
+        $doneTasks = $allTasks->where('status', 'done')->count();
+
+        // Overall Task Success (percentage of done tasks)
+        $taskSuccessPercent = $totalTasks > 0 ? round(($doneTasks / $totalTasks) * 100) : 0;
+
+        // Completed Projects: projects where ALL tasks are done (and has at least 1 task)
+        $completedProjects = $projects->filter(function ($p) {
+            return $p->tasks->count() > 0 && $p->tasks->every(fn($t) => $t->status === 'done');
+        })->count();
+
+        // === URGENT TASKS ===
+        // Tasks that are overdue (end_date < today) or due today, and not done
+        $today = Carbon::today()->toDateString();
+        $urgentTasks = Task::whereHas('project', fn($q) => $q->where('division_id', $divisionId))
+            ->where('status', '!=', 'done')
+            ->where('end_date', '<=', $today)
+            ->with('project')
+            ->orderBy('end_date', 'asc')
+            ->limit(5)
+            ->get()
+            ->map(function ($task) use ($today) {
+                $task->urgency_label = $task->end_date < $today ? 'Overdue' : 'Today';
+                return $task;
+            });
+
+        // === TEAM PERFORMANCE ===
+        // Members in this division, ranked by number of completed tasks
+        $teamMembers = User::where('division_id', $divisionId)->get();
+        $maxDone = 1; // avoid division by zero
+
+        $teamPerformance = $teamMembers->map(function ($member) use ($divisionId) {
+            $completedCount = Task::where('user_id', $member->id)
+                ->whereHas('project', fn($q) => $q->where('division_id', $divisionId))
+                ->where('status', 'done')
+                ->count();
+
+            return (object) [
+                'name' => $member->name,
+                'completed_tasks' => $completedCount,
+            ];
+        })->sortByDesc('completed_tasks')->values();
+
+        if ($teamPerformance->count() > 0 && $teamPerformance->first()->completed_tasks > 0) {
+            $maxDone = $teamPerformance->first()->completed_tasks;
+        }
+
+        // === RECENT ACTIVITY ===
+        // Latest 5 notifications for this user
+        $recentActivity = $user->notifications()
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($notif) {
+                $data = $notif->data;
+                return (object) [
+                    'icon' => ($data['status'] ?? '') === 'approved' ? 'ti-check' : 'ti-message',
+                    'title' => $data['task_title'] ?? 'Notification',
+                    'message' => $data['message'] ?? '',
+                    'time' => $notif->created_at->diffForHumans(),
+                ];
+            });
+
+        // Map view name based on division
+        $viewName = 'dashboard_' . $divisionName;
+
+        return view($viewName, compact(
+            'activeProjects',
+            'taskSuccessPercent',
+            'totalTasks',
+            'doneTasks',
+            'completedProjects',
+            'urgentTasks',
+            'teamPerformance',
+            'maxDone',
+            'recentActivity'
+        ));
+    }
+}

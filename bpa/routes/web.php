@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -15,21 +17,20 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/dashboard/ac', function () {
-    return view('dashboard_ac');
-})->middleware('auth');
+use App\Http\Controllers\StaffDashboardController;
 
-Route::get('/dashboard/curriculum', function () {
-    return view('dashboard_curriculum');
-})->middleware('auth');
+Route::get('/dashboard/ac', [StaffDashboardController::class, 'show'])
+    ->middleware('auth');
 
-Route::get('/dashboard/mklt', function () {
-    return view('dashboard_mklt');
-})->middleware('auth');
+Route::get('/dashboard/curriculum', [StaffDashboardController::class, 'show'])
+    ->middleware('auth');
 
-Route::get('/dashboard/mkwk', function () {
-    return view('dashboard_mkwk');
-})->middleware('auth');
+Route::get('/dashboard/mklt', [StaffDashboardController::class, 'show'])
+    ->middleware('auth');
+
+Route::get('/dashboard/mkwk', [StaffDashboardController::class, 'show'])
+    ->middleware('auth');
+
 
 Route::get('/dashboard', function () {
     return "dashboard";
@@ -38,6 +39,18 @@ Route::get('/dashboard', function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
+Route::get('/dashboard/manager', [ManagerController::class, 'dashboard'])
+    ->middleware('auth')
+    ->name('manager.dashboard');
+
+Route::get('/dashboard/manager/reviews', [ManagerController::class, 'reviews'])
+    ->middleware('auth')
+    ->name('manager.reviews');
+
+Route::get('/dashboard/manager/reviews/{task}', [ManagerController::class, 'reviewDetail'])
+    ->middleware('auth')
+    ->name('manager.review_detail');
+    
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware('auth')
     ->name('projects');
@@ -73,6 +86,18 @@ Route::put('/tasks/update/{task}',
 Route::post('/tasks/submit/{task}',
     [TaskController::class,'submit'])
     ->name('tasks.submit');
+
+Route::post('/projects/{project}/submit-reviews',
+    [TaskController::class,'submitBatch'])
+    ->name('projects.submit_reviews');
+
+Route::get('/notifications', [NotificationController::class, 'index'])
+    ->middleware('auth')
+    ->name('notifications.index');
+
+Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+    ->middleware('auth')
+    ->name('notifications.read');
 
 Route::post('/tasks/approve/{task}',
     [TaskController::class,'approve'])

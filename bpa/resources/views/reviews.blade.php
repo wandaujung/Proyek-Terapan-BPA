@@ -61,7 +61,7 @@
         <span class="font-condensed text-2xl font-extrabold tracking-wide" style="color:#CC1D1D;">PLANNER U</span>
       </div>
       <nav class="flex flex-col gap-1 px-3">
-        <a href="dashboard_manager.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-brand-muted">
+        <a  href="{{ route('manager.dashboard') }}" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-brand-muted">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
             <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
@@ -74,7 +74,7 @@
           </svg>
           Projects
         </a>
-        <a href="reviews.html" class="nav-item nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+        <a href="{{ route('manager.reviews') }}" class="nav-item nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 17H7A5 5 0 017 7h2M15 7h2a5 5 0 010 10h-2M9 12h6"/>
           </svg>
@@ -123,89 +123,27 @@
         <!-- Review list -->
         <div class="flex flex-col gap-4">
 
-          <!-- Item 1 -->
+          @foreach($reviewTasks as $task)
           <div class="bg-white rounded-2xl border border-brand-border p-6 review-card">
             <div class="flex items-start justify-between gap-6">
               <div class="flex-1">
-                <h3 class="font-condensed font-extrabold text-xl text-brand-text mb-1">Heritage Collection Mockups</h3>
-                <p class="text-xs text-brand-muted mb-4">Elena Dance &nbsp;·&nbsp; 2h ago</p>
+                <h3 class="font-condensed font-extrabold text-xl text-brand-text mb-1">{{ $task->title }}</h3>
+                <p class="text-xs text-brand-muted mb-4">{{ $task->user->name ?? 'Staff' }} &nbsp;·&nbsp; {{ $task->updated_at->diffForHumans() }}</p>
                 <div class="bg-brand-bg rounded-lg border-l-4 px-4 py-3" style="border-color:#CC1D1D;">
-                  <p class="text-[10px] font-bold tracking-widest uppercase mb-1" style="color:#CC1D1D;">Staff Notes</p>
-                  <p class="text-sm text-brand-muted italic">"Final materials selected for the residential wing. Awaiting feedback on the stone textures."</p>
+                  <p class="text-[10px] font-bold tracking-widest uppercase mb-1" style="color:#CC1D1D;">Project</p>
+                  <p class="text-sm text-brand-muted italic">"{{ $task->project->name ?? 'No Project' }}"</p>
                 </div>
               </div>
               <div class="flex-shrink-0 flex flex-col items-center gap-2 mt-1">
-                <button class="text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors w-full" style="background:#A81515;" onmouseover="this.style.background='#CC1D1D'" onmouseout="this.style.background='#A81515'" onclick="window.location.href='review_detail.html'">Review</button>
-                <a href="review_detail.html" class="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-brand-text hover:text-brand-red transition-colors">
+                <button class="text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors w-full" style="background:#A81515;" onmouseover="this.style.background='#CC1D1D'" onmouseout="this.style.background='#A81515'" onclick="window.location.href='{{ route('manager.review_detail', $task->id) }}'">Review</button>
+                <a href="{{ route('manager.review_detail', $task->id) }}" class="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-brand-text hover:text-brand-red transition-colors">
                   Project Details
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/></svg>
                 </a>
               </div>
             </div>
           </div>
-
-          <!-- Item 2 -->
-          <div class="bg-white rounded-2xl border border-brand-border p-6 review-card">
-            <div class="flex items-start justify-between gap-6">
-              <div class="flex-1">
-                <h3 class="font-condensed font-extrabold text-xl text-brand-text mb-1">Spring Editorial Copy Deck</h3>
-                <p class="text-xs text-brand-muted mb-4">Julian Amari &nbsp;·&nbsp; 5h ago</p>
-                <div class="bg-brand-bg rounded-lg border-l-4 px-4 py-3" style="border-color:#CC1D1D;">
-                  <p class="text-[10px] font-bold tracking-widest uppercase mb-1" style="color:#CC1D1D;">Staff Notes</p>
-                  <p class="text-sm text-brand-muted italic">"Revised headlines to align with the new sustainability manifesto."</p>
-                </div>
-              </div>
-              <div class="flex-shrink-0 flex flex-col items-center gap-2 mt-1">
-                <button class="text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors w-full" style="background:#A81515;" onmouseover="this.style.background='#CC1D1D'" onmouseout="this.style.background='#A81515'" onclick="window.location.href='review_detail.html'">Review</button>
-                <a href="review_detail.html" class="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-brand-text hover:text-brand-red transition-colors">
-                  Project Details
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/></svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item 3 -->
-          <div class="bg-white rounded-2xl border border-brand-border p-6 review-card">
-            <div class="flex items-start justify-between gap-6">
-              <div class="flex-1">
-                <h3 class="font-condensed font-extrabold text-xl text-brand-text mb-1">Terracotta Material Specs</h3>
-                <p class="text-xs text-brand-muted mb-4">Marcus Chen &nbsp;·&nbsp; Yesterday</p>
-                <div class="bg-brand-bg rounded-lg border-l-4 px-4 py-3" style="border-color:#CC1D1D;">
-                  <p class="text-[10px] font-bold tracking-widest uppercase mb-1" style="color:#CC1D1D;">Staff Notes</p>
-                  <p class="text-sm text-brand-muted italic">"Detailed specs for the glaze finish on the outdoor pavers."</p>
-                </div>
-              </div>
-              <div class="flex-shrink-0 flex flex-col items-center gap-2 mt-1">
-                <button class="text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors w-full" style="background:#A81515;" onmouseover="this.style.background='#CC1D1D'" onmouseout="this.style.background='#A81515'" onclick="window.location.href='review_detail.html'">Review</button>
-                <a href="review_detail.html" class="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-brand-text hover:text-brand-red transition-colors">
-                  Project Details
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/></svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item 4 -->
-          <div class="bg-white rounded-2xl border border-brand-border p-6 review-card">
-            <div class="flex items-start justify-between gap-6">
-              <div class="flex-1">
-                <h3 class="font-condensed font-extrabold text-xl text-brand-text mb-1">Terracotta Material Specs</h3>
-                <p class="text-xs text-brand-muted mb-4">Marcus Chen &nbsp;·&nbsp; Yesterday</p>
-                <div class="bg-brand-bg rounded-lg border-l-4 px-4 py-3" style="border-color:#CC1D1D;">
-                  <p class="text-[10px] font-bold tracking-widest uppercase mb-1" style="color:#CC1D1D;">Staff Notes</p>
-                  <p class="text-sm text-brand-muted italic">"Detailed specs for the glaze finish on the outdoor pavers."</p>
-                </div>
-              </div>
-              <div class="flex-shrink-0 flex flex-col items-center gap-2 mt-1">
-                <button class="text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors w-full" style="background:#A81515;" onmouseover="this.style.background='#CC1D1D'" onmouseout="this.style.background='#A81515'" onclick="window.location.href='review_detail.html'">Review</button>
-                <a href="review_detail.html" class="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-brand-text hover:text-brand-red transition-colors">
-                  Project Details
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/></svg>
-                </a>
-              </div>
-            </div>
-          </div>
+          @endforeach
 
         </div>
       </div><!-- /Content -->

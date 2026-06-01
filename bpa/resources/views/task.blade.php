@@ -244,7 +244,7 @@
         Projects
       </a>
 
-      <a href="#"
+      <a href="{{ route('notifications.index') }}"
          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
         <i class="ti ti-bell text-base"></i>
         Notification
@@ -370,26 +370,33 @@
             @foreach($reviewTasks as $task)
             <div data-task-id="{{ $task->id }}"
               onclick="openDetailModal({{ $task }})"
-              class="task-card bg-white rounded-xl p-4 shadow-sm border-l-4 hover:shadow-md transition-shadow">
+              class="task-card bg-white rounded-xl p-4 shadow-sm border-l-4 hover:shadow-md transition-shadow relative">
               <p class="font-semibold text-sm text-gray-800">{{ $task->title }}</p>
-              <div class="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
-                  <path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-                {{ $task->start_date }} – {{ $task->end_date }}
+              
+              @if($task->review_status === 'revision' && $task->revision_notes)
+              <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-800">
+                <strong>Revision:</strong> {{ $task->revision_notes }}
               </div>
+              @endif
+
+                <div class="flex items-center gap-1.5 text-xs text-gray-400">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2" />
+                    <path stroke-linecap="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  {{ $task->start_date }} – {{ $task->end_date }}
+                </div>
             </div>
             @endforeach
           </div><!-- end col-review -->
 
           <!-- Submit Button -->
-          <button onclick="openSubmitModal()"
+          <button onclick="openSubmitModal('{{ $project->id }}', '{{ $project->name }}')"
             class="border border-[#b91c1c] text-[#b91c1c] text-xs font-semibold rounded-xl py-3 flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
-            SUBMIT
+            SUBMIT ALL
           </button>
 
         </div>
@@ -577,7 +584,8 @@
 
   <!-- Submit Modal -->
   <div id="submitModal" class="modal-overlay" onclick="handleSubmitOverlayClick(event)">
-    <div class="modal-box !max-w-[480px]" onclick="event.stopPropagation()">
+    <form id="submitForm" method="POST" action="" class="modal-box !max-w-[480px]" onclick="event.stopPropagation()">
+      @csrf
       <div class="px-8 pt-8 pb-6 border-b border-gray-200">
         <h2 class="brand-font text-2xl text-gray-800 tracking-wide mb-1">Submit Project for Review</h2>
         <p class="text-xs text-gray-500 leading-relaxed">Ensure all assets are finalized and linked before submission. Your manager will receive a notification to begin the editorial review process.</p>
@@ -591,41 +599,27 @@
             <div class="w-8 h-8 rounded-lg bg-[#e8e2da] flex items-center justify-center text-[#b91c1c]">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
             </div>
-            <span class="text-sm font-semibold text-gray-800 flex-1">Proyek PM</span>
+            <span id="submitModalProjectName" class="text-sm font-semibold text-gray-800 flex-1">Proyek PM</span>
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
           </div>
         </div>
 
-        <!-- Manager / Reviewer -->
+        <!-- Manager Email -->
         <div>
-          <label class="modal-label">Manager / Reviewer</label>
-          <div class="flex items-center gap-2">
-            <div class="flex-1 flex items-center gap-2 bg-[#f0ece6] rounded-xl px-4 py-3">
-              <span class="text-gray-400 font-serif text-sm">@</span>
-              <input type="email" placeholder="Email..." class="bg-transparent border-none outline-none text-sm text-gray-600 placeholder-gray-400 flex-1 font-['Inter']" />
-            </div>
-            <button class="bg-[#b91c1c] hover:bg-[#991b1b] text-white text-sm font-semibold px-5 py-3 rounded-xl flex items-center gap-2 transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-              Add
-            </button>
-          </div>
+          <label class="modal-label">Manager Email</label>
+          <input type="email" name="manager_email" required placeholder="manager@planneru.com" class="modal-input" />
         </div>
 
-        <!-- Notes -->
-        <div>
-          <label class="modal-label">Notes for Reviewer</label>
-          <textarea rows="4" placeholder="Describe any specific areas that need attention or context regarding the assets..." class="modal-input resize-none"></textarea>
-        </div>
       </div>
 
       <div class="px-8 py-6 flex items-center gap-4">
-        <button class="flex-1 bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm">
+        <button type="submit" class="flex-1 bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
           Submit for Review
         </button>
-        <button onclick="closeSubmitModal()" class="text-sm font-semibold text-gray-600 hover:text-gray-800 px-6 transition-colors">Cancel</button>
+        <button type="button" onclick="closeSubmitModal()" class="text-sm font-semibold text-gray-600 hover:text-gray-800 px-6 transition-colors">Cancel</button>
       </div>
-    </div>
+    </form>
   </div>
 
   <!-- Create New Task Modal -->
@@ -887,9 +881,15 @@
       toggleDetailSubTaskForm();
     }
     // Submit Modal
-    function openSubmitModal() {
+    function openSubmitModal(projectId, projectName) {
       document.getElementById('submitModal').classList.add('open');
       document.body.style.overflow = 'hidden';
+      if (projectId) {
+        document.getElementById('submitForm').action = '/projects/' + projectId + '/submit-reviews';
+      }
+      if (projectName) {
+        document.getElementById('submitModalProjectName').innerText = projectName;
+      }
     }
     function closeSubmitModal() {
       document.getElementById('submitModal').classList.remove('open');

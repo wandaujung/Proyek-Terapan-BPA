@@ -71,7 +71,7 @@
         <span class="font-condensed text-2xl font-extrabold tracking-wide" style="color:#CC1D1D;">PLANNER U</span>
       </div>
       <nav class="flex flex-col gap-1 px-3">
-        <a href="dashboard_manager.html" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-brand-muted">
+        <a href="{{ route('manager.dashboard') }}" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-brand-muted">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
             <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
@@ -84,7 +84,7 @@
           </svg>
           Projects
         </a>
-        <a href="reviews.html" class="nav-item nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+        <a href="{{ route('manager.reviews') }}" class="nav-item nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 17H7A5 5 0 017 7h2M15 7h2a5 5 0 010 10h-2M9 12h6"/>
           </svg>
@@ -127,22 +127,22 @@
         <!-- Badge + Title -->
         <div class="mb-4">
           <span class="inline-block bg-brand-red text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded mb-3">Editorial Review</span>
-          <h1 class="font-condensed font-extrabold text-4xl text-brand-text leading-tight">Heritage Collection Mockups</h1>
+          <h1 class="font-condensed font-extrabold text-4xl text-brand-text leading-tight">{{ $task->title }}</h1>
         </div>
 
         <!-- Submitter meta -->
         <div class="flex items-center gap-6 mb-8">
           <div class="flex items-center gap-3">
             <!-- Avatar placeholder -->
-            <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold overflow-hidden" style="background:#C5BFB9; color:#6B6560; flex-shrink:0;">EV</div>
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold overflow-hidden" style="background:#C5BFB9; color:#6B6560; flex-shrink:0;">{{ strtoupper(substr($task->user->name ?? 'U', 0, 2)) }}</div>
             <div>
               <p class="text-[10px] font-bold tracking-widest uppercase text-brand-muted">Submitted By</p>
-              <p class="text-sm font-bold text-brand-text">Elena Vance</p>
+              <p class="text-sm font-bold text-brand-text">{{ $task->user->name ?? 'Staff' }}</p>
             </div>
           </div>
           <div>
             <p class="text-[10px] font-bold tracking-widest uppercase text-brand-muted">Date Submitted</p>
-            <p class="text-sm font-bold text-brand-text">Oct 12, 2024</p>
+            <p class="text-sm font-bold text-brand-text">{{ $task->updated_at->format('M d, Y') }}</p>
           </div>
         </div>
 
@@ -152,16 +152,16 @@
           <!-- Left column -->
           <div class="flex-1 flex flex-col gap-6">
 
-            <!-- Submission Notes -->
+            <!-- Task Description -->
             <div class="bg-white rounded-2xl border border-brand-border p-6">
               <div class="flex items-center gap-2 mb-4">
                 <svg class="w-4 h-4 text-brand-text" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path d="M4 6h16M4 12h16M4 18h7"/>
                 </svg>
-                <h2 class="font-condensed font-extrabold text-lg text-brand-text">Submission Notes</h2>
+                <h2 class="font-condensed font-extrabold text-lg text-brand-text">Description</h2>
               </div>
               <p class="text-sm text-brand-muted italic leading-relaxed">
-                "Final materials selected for the residential wing focus on organic textures and local sourcing. The mockup set includes the revised facade treatment and the interior lobby palette. We've prioritized durability without sacrificing the editorial warmth requested by the client. V3 addresses the previous concerns regarding the lighting fixtures in the gallery space."
+                "{{ $task->description ?? 'No description provided.' }}"
               </p>
             </div>
 
@@ -171,76 +171,24 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
                 <!-- File 1 -->
-                <div class="file-card bg-white rounded-xl border border-brand-border p-4 flex items-center gap-3">
+                @if($task->submission_link)
+                <a href="{{ $task->submission_link }}" target="_blank" class="file-card bg-white rounded-xl border border-brand-border p-4 flex items-center gap-3">
                   <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#FDE8E8;">
                     <svg class="w-5 h-5" fill="none" stroke="#CC1D1D" stroke-width="2" viewBox="0 0 24 24">
                       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
                     </svg>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-brand-text leading-tight truncate">Draft_Mockups_V3.fig</p>
-                    <p class="text-xs text-brand-muted mt-0.5">Figma Design File · 42MB</p>
+                    <p class="text-sm font-bold text-brand-text leading-tight truncate">Submission Link</p>
+                    <p class="text-xs text-brand-muted mt-0.5">Click to view</p>
                   </div>
-                  <button class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-md hover:bg-brand-bg transition-colors">
+                  <div class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-md hover:bg-brand-bg transition-colors">
                     <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/>
-                    </svg>
-                  </button>
-                </div>
-
-                <!-- File 2 -->
-                <div class="file-card bg-white rounded-xl border border-brand-border p-4 flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#FDE8E8;">
-                    <svg class="w-5 h-5" fill="none" stroke="#CC1D1D" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                      <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
                   </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-brand-text leading-tight truncate">Draft_Mockups_V3.fig</p>
-                    <p class="text-xs text-brand-muted mt-0.5">Figma Design File · 42MB</p>
-                  </div>
-                  <button class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-md hover:bg-brand-bg transition-colors">
-                    <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/>
-                    </svg>
-                  </button>
-                </div>
-
-                <!-- File 3 -->
-                <div class="file-card bg-white rounded-xl border border-brand-border p-4 flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#FDE8E8;">
-                    <svg class="w-5 h-5" fill="none" stroke="#CC1D1D" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                    </svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-brand-text leading-tight truncate">Draft_Mockups_V3.fig</p>
-                    <p class="text-xs text-brand-muted mt-0.5">Figma Design File · 42MB</p>
-                  </div>
-                  <button class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-md hover:bg-brand-bg transition-colors">
-                    <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/>
-                    </svg>
-                  </button>
-                </div>
-
-                <!-- File 4 -->
-                <div class="file-card bg-white rounded-xl border border-brand-border p-4 flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#FDE8E8;">
-                    <svg class="w-5 h-5" fill="none" stroke="#CC1D1D" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                    </svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-brand-text leading-tight truncate">Draft_Mockups_V3.fig</p>
-                    <p class="text-xs text-brand-muted mt-0.5">Figma Design File · 42MB</p>
-                  </div>
-                  <button class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-md hover:bg-brand-bg transition-colors">
-                    <svg class="w-4 h-4 text-brand-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14"/>
-                    </svg>
-                  </button>
-                </div>
+                </a>
+                @endif
 
               </div>
             </div>
@@ -253,12 +201,29 @@
             <!-- Review Decision card -->
             <div class="bg-white rounded-2xl border border-brand-border p-6">
               <h2 class="font-condensed font-extrabold text-lg text-brand-text mb-4">Review Decision</h2>
-              <button id="btn-approve" class="btn-approve w-full flex items-center justify-center gap-2 text-white text-sm font-bold py-3 px-4 rounded-full" style="background:#1F6B50;" onclick="handleApprove()">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Approve Project
-              </button>
+              <form action="{{ route('tasks.approve', $task->id) }}" method="POST">
+                @csrf
+                <button type="submit" id="btn-approve" class="btn-approve w-full flex items-center justify-center gap-2 text-white text-sm font-bold py-3 px-4 rounded-full mb-3" style="background:#1F6B50;">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Approve Task
+                </button>
+              </form>
+
+              <hr class="my-4 border-brand-border" />
+
+              <form action="{{ route('tasks.revision', $task->id) }}" method="POST">
+                @csrf
+                <label class="block text-xs font-bold tracking-widest uppercase text-brand-muted mb-2">Request Revision</label>
+                <textarea name="revision_notes" rows="3" class="w-full bg-brand-bg rounded-xl border-none p-3 text-sm text-brand-text mb-3" placeholder="Add revision notes..." required></textarea>
+                <button type="submit" class="w-full flex items-center justify-center gap-2 text-brand-red border-2 border-brand-red bg-white hover:bg-red-50 text-sm font-bold py-2.5 px-4 rounded-full transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                  </svg>
+                  Request Revision
+                </button>
+              </form>
             </div>
 
             <!-- Info notice -->

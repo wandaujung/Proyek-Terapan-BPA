@@ -35,10 +35,6 @@
                 </svg>
             </div>
 
-            
-</select>
-            </div>
-
             <button type="submit" class="btn">Sign Up</button>
         </form>
     </div>

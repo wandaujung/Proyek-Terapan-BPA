@@ -135,7 +135,7 @@
       <nav class="flex flex-col gap-1">
         <!-- Active -->
         <a
-          href="#"
+          href="/dashboard/{{ strtolower(Auth::user()->division->name ?? 'curriculum') }}"
           class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/50 text-red font-semibold text-sm"
         >
           <i class="ti ti-layout-dashboard text-base"></i>
@@ -149,7 +149,7 @@
           Projects
         </a>
         <a
-          href="{{ url('/projects') }}"
+          href="{{ route('notifications.index') }}"
           class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition"
         >
           <i class="ti ti-bell text-base"></i>
@@ -240,10 +240,9 @@
             >
               Active Projects
             </p>
-            <p class="text-6xl font-black leading-none">12</p>
+            <p class="text-6xl font-black leading-none">{{ $activeProjects }}</p>
             <p class="text-xs text-gray-500 mt-3 leading-relaxed">
-              Total production boards currently in circulation across 3
-              editorial teams.
+              Total production boards currently in progress within this division.
             </p>
             <!-- Decorative grid -->
             <div
@@ -263,9 +262,9 @@
             >
               Overall Task Success
             </p>
-            <p class="text-6xl font-black leading-none">84%</p>
+            <p class="text-6xl font-black leading-none">{{ $taskSuccessPercent }}%</p>
             <p class="text-xs text-red font-semibold mt-3">
-              ↗ aggregated from 5 tasks.
+              ↗ {{ $doneTasks }} of {{ $totalTasks }} tasks completed.
             </p>
           </div>
 
@@ -278,9 +277,9 @@
             >
               Completed Projects
             </p>
-            <p class="text-6xl font-black leading-none">142</p>
+            <p class="text-6xl font-black leading-none">{{ $completedProjects }}</p>
             <p class="text-xs text-gray-500 mt-3 leading-relaxed">
-              Tasks fully resolved across workspaces.
+              Projects where all tasks are fully resolved.
             </p>
           </div>
         </div>
@@ -308,76 +307,37 @@
 
             <!-- Task List -->
             <div class="divide-y divide-black/[.07]">
-              <!-- Task 1 – Overdue -->
+              @forelse($urgentTasks as $task)
               <div class="flex items-start justify-between py-3">
                 <div>
-                  <p class="font-semibold text-sm">Finalize Theme</p>
+                  <p class="font-semibold text-sm">{{ $task->title }}</p>
                   <p class="text-xs text-gray-400 mt-0.5">
-                    Proyek : PKKMB 2026
+                    Proyek : {{ $task->project->name ?? '-' }}
                   </p>
                 </div>
                 <div class="text-right flex-shrink-0 ml-4">
                   <p
-                    class="text-[10px] font-bold text-red uppercase tracking-wide"
+                    class="text-[10px] font-bold {{ $task->urgency_label === 'Overdue' ? 'text-red' : 'text-gray-400' }} uppercase tracking-wide"
                   >
-                    Overdue
+                    {{ $task->urgency_label }}
                   </p>
                   <p
                     class="text-xs font-semibold text-red mt-0.5 cursor-pointer hover:underline"
                   >
-                    Complete Now
+                    {{ $task->urgency_label === 'Overdue' ? 'Complete Now' : 'Complete Soon' }}
                   </p>
                 </div>
               </div>
-
-              <!-- Task 2 -->
-              <div class="flex items-start justify-between py-3">
-                <div>
-                  <p class="font-semibold text-sm">Review TAK</p>
-                  <p class="text-xs text-gray-400 mt-0.5">
-                    Proyek : Syarat TAK
-                  </p>
-                </div>
-                <div class="text-right flex-shrink-0 ml-4">
-                  <p
-                    class="text-[10px] font-bold text-gray-400 uppercase tracking-wide"
-                  >
-                    Today
-                  </p>
-                  <p
-                    class="text-xs font-semibold text-red mt-0.5 cursor-pointer hover:underline"
-                  >
-                    Complete Soon
-                  </p>
-                </div>
+              @empty
+              <div class="py-4 text-center text-xs text-gray-400">
+                No urgent tasks — great job! 🎉
               </div>
-
-              <!-- Task 3 -->
-              <div class="flex items-start justify-between py-3">
-                <div>
-                  <p class="font-semibold text-sm">Review TAK</p>
-                  <p class="text-xs text-gray-400 mt-0.5">
-                    Proyek : Syarat TAK
-                  </p>
-                </div>
-                <div class="text-right flex-shrink-0 ml-4">
-                  <p
-                    class="text-[10px] font-bold text-gray-400 uppercase tracking-wide"
-                  >
-                    Today
-                  </p>
-                  <p
-                    class="text-xs font-semibold text-red mt-0.5 cursor-pointer hover:underline"
-                  >
-                    Complete Soon
-                  </p>
-                </div>
-              </div>
+              @endforelse
             </div>
 
             <!-- See All -->
             <div class="text-right mt-3">
-              <a href="#" class="text-xs font-semibold text-red hover:underline"
+              <a href="{{ route('projects') }}" class="text-xs font-semibold text-red hover:underline"
                 >Lihat Semua</a
               >
             </div>
@@ -391,56 +351,25 @@
               Team Performance
             </h2>
 
-            <!-- Member 1 -->
-            <div class="mb-5">
+            @forelse($teamPerformance as $member)
+            <div class="{{ !$loop->last ? 'mb-5' : '' }}">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-sm font-semibold">Muthia Luthfi N.</span>
+                <span class="text-sm font-semibold">{{ $member->name }}</span>
                 <span
                   class="bg-red text-white text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wide"
-                  >5 TASKS</span
+                  >{{ $member->completed_tasks }} TASKS</span
                 >
               </div>
               <div class="h-1.5 bg-[#D3CEC6] rounded-full overflow-hidden">
                 <div
                   class="h-full bg-red rounded-full"
-                  style="width: 50%"
+                  style="width: {{ $maxDone > 0 ? round(($member->completed_tasks / $maxDone) * 100) : 0 }}%"
                 ></div>
               </div>
             </div>
-
-            <!-- Member 2 -->
-            <div class="mb-5">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-sm font-semibold">Wanda Margareta</span>
-                <span
-                  class="bg-red text-white text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wide"
-                  >3 TASKS</span
-                >
-              </div>
-              <div class="h-1.5 bg-[#D3CEC6] rounded-full overflow-hidden">
-                <div
-                  class="h-full bg-red rounded-full"
-                  style="width: 30%"
-                ></div>
-              </div>
-            </div>
-
-            <!-- Member 3 -->
-            <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-sm font-semibold">Dito Ramadhan</span>
-                <span
-                  class="bg-red text-white text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wide"
-                  >7 TASKS</span
-                >
-              </div>
-              <div class="h-1.5 bg-[#D3CEC6] rounded-full overflow-hidden">
-                <div
-                  class="h-full bg-red rounded-full"
-                  style="width: 70%"
-                ></div>
-              </div>
-            </div>
+            @empty
+            <p class="text-xs text-gray-400">No team members yet.</p>
+            @endforelse
           </div>
         </div>
 
@@ -451,39 +380,27 @@
           </h2>
 
           <div class="flex flex-col gap-5">
-            <!-- Activity 1 -->
+            @forelse($recentActivity as $activity)
             <div class="flex items-start gap-4">
               <div
                 class="w-9 h-9 rounded-full bg-[#D3CEC6] flex items-center justify-center flex-shrink-0 text-gray-500"
               >
-                <i class="ti ti-message text-sm"></i>
+                <i class="ti {{ $activity->icon }} text-sm"></i>
               </div>
               <div>
-                <p class="text-sm font-semibold">Dave Andrew</p>
+                <p class="text-sm font-semibold">{{ $activity->title }}</p>
                 <p class="text-xs text-gray-500 leading-relaxed mt-0.5">
-                  Revisi – Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been…
+                  {{ Str::limit($activity->message, 120) }}
                 </p>
+                <p class="text-[10px] text-gray-400 mt-1">{{ $activity->time }}</p>
               </div>
             </div>
-
-            <!-- Activity 2 -->
-            <div class="flex items-start gap-4">
-              <div
-                class="w-9 h-9 rounded-full bg-[#D3CEC6] flex items-center justify-center flex-shrink-0 text-gray-500"
-              >
-                <i class="ti ti-message text-sm"></i>
-              </div>
-              <div>
-                <p class="text-sm font-semibold">Manager</p>
-                <p class="text-xs text-gray-500 leading-relaxed mt-0.5">
-                  Revisi – Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been…
-                </p>
-              </div>
-            </div>
+            @empty
+            <p class="text-xs text-gray-400">No recent activity yet.</p>
+            @endforelse
           </div>
         </div>
+
       </div>
       <!-- /scrollable content -->
     </main>

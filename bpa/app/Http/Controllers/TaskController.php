@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\SubTask;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\TaskReviewed;
 
 
 class TaskController extends Controller
@@ -94,6 +96,22 @@ class TaskController extends Controller
         return back();
     }
 
+    public function submitBatch(Request $request, Project $project)
+    {
+        $request->validate([
+            'manager_email' => 'required|email'
+        ]);
+
+        Task::where('project_id', $project->id)
+            ->where('status', 'review')
+            ->update([
+                'review_status' => 'pending',
+                'manager_email' => $request->manager_email
+            ]);
+
+        return back()->with('success', 'Tasks submitted for review');
+    }
+
     public function submit(Request $request, Task $task)
     {
         $task->update([
@@ -112,15 +130,24 @@ class TaskController extends Controller
             'review_status' => 'approved'
         ]);
 
+        if ($task->user) {
+            $task->user->notify(new TaskReviewed($task, 'approved'));
+        }
+
         return back();
     }
 
-    public function revision(Task $task)
+    public function revision(Request $request, Task $task)
     {
         $task->update([
             'status' => 'progress',
-            'review_status' => 'revision'
+            'review_status' => 'revision',
+            'revision_notes' => $request->revision_notes
         ]);
+
+        if ($task->user) {
+            $task->user->notify(new TaskReviewed($task, 'revision', $request->revision_notes));
+        }
 
         return back();
     }

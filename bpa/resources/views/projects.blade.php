@@ -82,7 +82,7 @@
         Projects
       </a>
 
-      <a href="#"
+      <a href="{{ route('notifications.index') }}"
          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
         <i class="ti ti-bell text-base"></i>
         Notification
@@ -172,8 +172,7 @@
 
       <!-- EDIT BUTTON -->
       <button
-      onclick="event.stopPropagation()"
-        openEditModal(
+        onclick="event.stopPropagation(); openEditModal(
           '{{ $project->id }}',
           '{{ $project->name }}',
           '{{ $project->start_project }}',
