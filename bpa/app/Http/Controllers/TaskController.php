@@ -134,7 +134,7 @@ class TaskController extends Controller
             $task->user->notify(new TaskReviewed($task, 'approved'));
         }
 
-        return back();
+        return redirect()->route('manager.reviews')->with('success', 'Task approved successfully!');
     }
 
     public function revision(Request $request, Task $task)
@@ -149,7 +149,7 @@ class TaskController extends Controller
             $task->user->notify(new TaskReviewed($task, 'revision', $request->revision_notes));
         }
 
-        return back();
+        return redirect()->route('manager.reviews')->with('success', 'Revision requested successfully!');
     }
 
     public function updateStatus(Request $request, Task $task)

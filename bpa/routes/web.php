@@ -38,10 +38,17 @@ Route::get('/dashboard', function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/profile', function () {
+    return view('profile');
+})->middleware('auth')->name('profile');
 
 Route::get('/dashboard/manager', [ManagerController::class, 'dashboard'])
     ->middleware('auth')
     ->name('manager.dashboard');
+
+Route::get('/dashboard/manager/projects', [ManagerController::class, 'projects'])
+    ->middleware('auth')
+    ->name('manager.projects.index');
 
 Route::get('/dashboard/manager/reviews', [ManagerController::class, 'reviews'])
     ->middleware('auth')
@@ -50,6 +57,11 @@ Route::get('/dashboard/manager/reviews', [ManagerController::class, 'reviews'])
 Route::get('/dashboard/manager/reviews/{task}', [ManagerController::class, 'reviewDetail'])
     ->middleware('auth')
     ->name('manager.review_detail');
+
+Route::post('/dashboard/manager/projects', [ManagerController::class, 'storeProject'])
+    ->middleware('auth')
+    ->name('manager.projects.store');
+
     
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware('auth')

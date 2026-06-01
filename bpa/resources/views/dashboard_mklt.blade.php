@@ -191,29 +191,11 @@
               <i class="ti ti-bell text-base"></i>
             </button>
           </div>
-          <!-- Avatar -->
-          <div class="avatar-ring">
-            <div
-              class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none overflow-hidden"
-            >
-              <!-- Person silhouette SVG -->
-              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                <rect width="36" height="36" fill="#D1CFC9"/>
-                <!-- body / suit -->
-                <rect x="7" y="22" width="22" height="14" rx="4" fill="#3a3a4a"/>
-                <!-- collar left -->
-                <polygon points="14,22 18,28 18,22" fill="#f5f5f5"/>
-                <!-- collar right -->
-                <polygon points="22,22 18,28 18,22" fill="#e8e8e8"/>
-                <!-- tie -->
-                <polygon points="17,23 19,23 18.5,30 17.5,30" fill="#C0282D"/>
-                <!-- head -->
-                <circle cx="18" cy="14" r="6" fill="#e8c99a"/>
-                <!-- hair -->
-                <path d="M12 13 Q12 7 18 7 Q24 7 24 13 Q22 10 18 10 Q14 10 12 13Z" fill="#4a3728"/>
-              </svg>
+          <a href="{{ route('profile') }}" class="avatar-ring cursor-pointer hover:ring-2 hover:ring-red transition" style="display: block;">
+            <div class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none">
+              {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
             </div>
-          </div>
+          </a>
         </div>
       </header>
 
@@ -336,5 +318,6 @@
       </div>
       <!-- /scrollable content -->
     </main>
+
   </body>
 </html>

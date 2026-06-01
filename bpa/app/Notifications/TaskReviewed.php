@@ -55,6 +55,7 @@ class TaskReviewed extends Notification
     {
         return [
             'task_id' => $this->task->id,
+            'project_id' => $this->task->project_id,
             'title' => $this->task->title,
             'action' => $this->action,
             'notes' => $this->notes,

@@ -70,4 +70,29 @@ class ManagerController extends Controller
         $task->load(['user', 'project', 'subTasks']);
         return view('review_detail', compact('task'));
     }
+
+    public function projects()
+    {
+        $divisions = \App\Models\Division::with(['projects.tasks', 'projects.members'])->get();
+        return view('project_manager', compact('divisions'));
+    }
+
+    public function storeProject(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'division_id' => 'required|exists:divisions,id',
+            'start_project' => 'required|date',
+            'end_project' => 'required|date|after_or_equal:start_project',
+        ]);
+
+        Project::create([
+            'name' => $request->name,
+            'division_id' => $request->division_id,
+            'start_project' => $request->start_project,
+            'end_project' => $request->end_project,
+        ]);
+
+        return redirect()->route('manager.projects.index')->with('success', 'Project created successfully!');
+    }
 }

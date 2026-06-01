@@ -30,15 +30,15 @@
     </a>
 
     <nav class="flex flex-col gap-2 px-4 mt-8">
-      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
+      <a href="{{ Auth::user()->division ? '/dashboard/' . strtolower(Auth::user()->division->name) : route('manager.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         Dashboard
       </a>
-      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
+      <a href="{{ Auth::user()->division ? route('projects') : route('manager.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M16 3v4M8 3v4M3 9h18"/></svg>
         Projects
       </a>
-      <a href="notification.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
+      <a href="{{ route('notifications.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
         Notification
       </a>
@@ -57,9 +57,8 @@
         <button class="w-10 h-10 rounded-full bg-[#E6E4E2] flex items-center justify-center hover:bg-gray-300 transition relative">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#4A4A4A" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
         </button>
-        <div class="w-10 h-10 rounded-full overflow-hidden border border-gray-300 bg-gray-200 flex items-center justify-center">
-            <!-- Simulated avatar -->
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <div class="w-10 h-10 rounded-full overflow-hidden border border-gray-300 bg-gray-200 flex items-center justify-center font-bold text-gray-600">
+            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
         </div>
       </div>
     </header>
@@ -74,9 +73,8 @@
 
       <!-- AVATAR -->
       <div class="relative">
-        <div class="w-48 h-48 rounded-full bg-[#ECEDE9] flex items-center justify-center relative shadow-inner overflow-hidden border-4 border-white/40">
-           <!-- Using placeholder icon -->
-           <svg class="w-24 h-24 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <div class="w-48 h-48 rounded-full bg-[#ECEDE9] flex items-center justify-center relative shadow-inner overflow-hidden border-4 border-white/40 text-gray-600 text-6xl font-black">
+           {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
         </div>
         <!-- Verification Badge -->
         <div class="absolute bottom-1 right-2 w-10 h-10 rounded-full bg-[#2E7D32] border-4 border-[#FAF8F5] flex items-center justify-center text-white shadow-md">
@@ -85,8 +83,9 @@
       </div>
 
       <!-- TEXT DETAILS -->
-      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mt-8 tracking-tight">staff.bpa@gmail.com</h1>
-      <h2 class="text-xl md:text-2xl text-[#C21A23] mt-3 font-semibold">Curriculum Division</h2>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mt-8 tracking-tight">{{ Auth::user()->name }}</h1>
+      <h2 class="text-xl md:text-2xl text-[#C21A23] mt-3 font-semibold">{{ Auth::user()->division->name ?? 'Manager' }}</h2>
+      <p class="text-gray-500 mt-2 font-medium">{{ Auth::user()->email }}</p>
       
       <!-- DIVIDER -->
       <div class="w-72 md:w-96 h-[2px] bg-[#E6E4E2] my-10 rounded-full"></div>
@@ -123,9 +122,12 @@
 
       <!-- Buttons Group -->
       <div class="w-full flex flex-col gap-3">
-        <button onclick="closeLogoutModal()" class="w-full py-4 bg-[#b21522] text-white font-semibold rounded-2xl shadow-lg shadow-red-700/20 hover:bg-[#99131c] transition duration-200 text-center">
-          Log Out
-        </button>
+        <form action="{{ route('logout') }}" method="POST" class="w-full m-0">
+          @csrf
+          <button type="submit" class="w-full py-4 bg-[#b21522] text-white font-semibold rounded-2xl shadow-lg shadow-red-700/20 hover:bg-[#99131c] transition duration-200 text-center">
+            Log Out
+          </button>
+        </form>
         <button onclick="closeLogoutModal()" class="w-full py-4 bg-[#EDEAE6] text-[#44403C] font-semibold rounded-2xl hover:bg-[#E2DDD7] transition duration-200 text-center">
           Stay Logged In
         </button>

@@ -103,9 +103,9 @@
         <span class="brand text-2xl text-red">BPA</span>
       </div>
 
-      <div class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none">
-        AD
-      </div>
+      <a href="{{ route('profile') }}" class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none hover:ring-2 hover:ring-red transition cursor-pointer">
+        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+      </a>
 
     </header>
 
