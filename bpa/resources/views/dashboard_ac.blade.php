@@ -121,7 +121,9 @@
   ══════════════════════════════════════════ -->
     <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5">
       <!-- Logo -->
-      <div class="brand text-3xl text-red px-1">PLANNER U</div>
+      <div class="brand text-3xl text-red px-1">
+        <img src="{{ asset('images/logo-planneru.png') }}" alt="Planner U">
+      </div>
 
       <!-- New Project -->
       <button

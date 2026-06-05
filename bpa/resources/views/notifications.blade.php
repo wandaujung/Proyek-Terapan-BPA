@@ -40,7 +40,7 @@
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #C0282D55; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb { background: transparent; border-radius: 99px; }
 
     .notif-card {
       background: #ffffff;

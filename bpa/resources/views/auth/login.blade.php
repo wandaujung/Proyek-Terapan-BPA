@@ -9,7 +9,9 @@
 <body>
 
 <div class="auth-wrapper">
-    <div class="title">Planner U</div>
+    <div class="title">
+    <img src="{{ asset('images/logo-planneru.png') }}" alt="Planner U Logo">
+</div>
     <div class="subtitle">Project Management Planner Telkom University</div>
 
     <div class="card">

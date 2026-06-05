@@ -1,10 +1,8 @@
 <!-- ── TOPBAR ── -->
-<header class="flex items-center justify-between px-8 py-4 bg-[#FCF9F4] sticky top-0 z-10 flex-shrink-0">
+<header class="flex items-center justify-between px-8 pt-6 pb-2 border-b border-brand-border bg-brand-bg bg-[#FCF9F4] sticky top-0 z-10 flex-shrink-0 mb-2 shadow-md"
   <!-- Left: Logo -->
   <div class="flex items-center gap-2">
-    <span class="brand text-2xl text-red">PLANNER U</span>
-    <span class="text-gray-300 font-light text-xl">×</span>
-    <span class="brand text-2xl text-red">BPA</span>
+    <img src="{{ asset('images/logo-xbpa.png') }}" alt="Planner U" class="h-14">
   </div>
 
   <!-- Right: Search Bar + Bell + Avatar -->

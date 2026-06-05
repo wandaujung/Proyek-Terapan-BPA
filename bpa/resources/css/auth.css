@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 * {
     box-sizing: border-box;
@@ -7,8 +7,13 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at 10% 10%, #fdece3, #fdfaf7 50%, #fdfaf7);
+    font-family: "Inter", sans-serif;
+    background: radial-gradient(
+        circle at 10% 10%,
+        #fdece3,
+        #fdfaf7 50%,
+        #fdfaf7
+    );
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -41,7 +46,7 @@ body {
     background: #ffffff;
     padding: 40px;
     border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
     margin-bottom: 20px;
 }
 
@@ -70,7 +75,7 @@ body {
     background: #f7f4f1;
     font-size: 14px;
     color: #333;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     outline: none;
     transition: background 0.3s;
     appearance: none;
@@ -126,11 +131,11 @@ body {
 .options-row input[type="checkbox"] {
     width: 14px;
     height: 14px;
-    accent-color: #8b3a2b;
+    accent-color: #ba1a1a;
 }
 
 .options-row a {
-    color: #8b3a2b;
+    color: #ba1a1a;
     text-decoration: none;
     font-weight: 500;
 }
@@ -140,13 +145,13 @@ body {
     padding: 14px;
     border-radius: 24px; /* pill shape */
     border: none;
-    background: #8b3a2b;
+    background: #ba1a1a;
     color: white;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
     transition: background 0.3s;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
 }
 
 .btn:hover {
@@ -159,7 +164,7 @@ body {
 }
 
 .bottom-text a {
-    color: #8b3a2b;
+    color: #ba1a1a;
     text-decoration: none;
     font-weight: 700;
     margin-left: 4px;
