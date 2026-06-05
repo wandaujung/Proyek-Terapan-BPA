@@ -9,17 +9,23 @@ use App\Models\User;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    $projects = Project::where(
-        'division_id',
-        Auth::user()->division_id
-    )->get();
+    $user = Auth::user();
 
-    $users = User::where(
-        'division_id',
-        Auth::user()->division_id
-    )->get();
+    $query = Project::where(function($q) use ($user) {
+        $q->where('division_id', $user->division_id)
+          ->orWhereHas('members', function($q2) use ($user) {
+              $q2->where('user_id', $user->id);
+          });
+    });
+
+    if ($request->has('search') && $request->search != '') {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+
+    $projects = $query->get();
+    $users = User::all();
 
     return view('projects', compact('projects', 'users'));
 }
@@ -93,13 +99,18 @@ class ProjectController extends Controller
 }
 public function tasks($id)
 {
-    $project = Project::with('tasks.subTasks')->findOrFail($id);
+    $project = Project::with(['tasks.subTasks', 'members'])->findOrFail($id);
 
     $todoTasks     = $project->tasks->where('status', 'todo');
     $progressTasks = $project->tasks->where('status', 'progress');
     $reviewTasks   = $project->tasks->where('status', 'review');
     $doneTasks     = $project->tasks->where('status', 'done');
 
-    return view('task', compact('project', 'todoTasks', 'progressTasks', 'reviewTasks', 'doneTasks'));
+    // Get available users (same division + collaborators)
+    $divisionUsers = User::where('division_id', $project->division_id)->get();
+    $collaborators = $project->members;
+    $availableUsers = $divisionUsers->merge($collaborators)->unique('id');
+
+    return view('task', compact('project', 'todoTasks', 'progressTasks', 'reviewTasks', 'doneTasks', 'availableUsers'));
 }
 }

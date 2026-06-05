@@ -5,10 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Planner U × BPA – Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            brand: ['"Bebas Neue"', "sans-serif"],
+            body: ['"DM Sans"', "sans-serif"],
+          },
+          colors: {
+            cream: "#EDE8E0",
+            sidebar: "#D9D4CB",
+            red: "#C0282D",
+            "red-dark": "#A82025",
+          },
+        },
+      },
+    };
+  </script>
   <style>
     body {
       font-family: 'DM Sans', sans-serif;
+    }
+    .brand {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.06em;
     }
     .logo-text {
       font-family: 'Barlow Condensed', sans-serif;
@@ -18,29 +43,40 @@
 <body class="bg-[#FAF8F5] text-gray-900 m-0 overflow-hidden flex min-h-screen">
   
   <!-- SIDEBAR -->
-  <aside class="w-64 h-screen bg-[#E6E4E2] flex flex-col py-6 border-r border-[#D9D7D5] flex-shrink-0 relative z-20">
-    <div class="mb-8 px-6 text-2xl font-extrabold text-[#C21A23] tracking-widest logo-text">
-      PLANNER U
-    </div>
+  <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5 relative z-20 h-screen">
+    <!-- Logo -->
+    <div class="brand text-3xl text-red px-1">PLANNER U</div>
 
-    <!-- New Project Button -->
-    <a href="#" class="mx-4 bg-[#C21A23] hover:bg-red-800 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all">
-      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    <!-- New Project -->
+    <button
+      class="flex items-center gap-2 bg-red hover:bg-red-dark transition text-white rounded-2xl px-4 py-3 text-sm font-semibold"
+    >
+      <i class="ti ti-plus text-base"></i>
       New Project
-    </a>
+    </button>
 
-    <nav class="flex flex-col gap-2 px-4 mt-8">
-      <a href="{{ Auth::user()->division ? '/dashboard/' . strtolower(Auth::user()->division->name) : route('manager.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <!-- Nav -->
+    <nav class="flex flex-col gap-1">
+      <a
+        href="{{ Auth::user()->division ? '/dashboard/' . strtolower(Auth::user()->division->name) : route('manager.dashboard') }}"
+        class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition"
+      >
+        <i class="ti ti-layout-dashboard text-base"></i>
         Dashboard
       </a>
-      <a href="{{ Auth::user()->division ? route('projects') : route('manager.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M16 3v4M8 3v4M3 9h18"/></svg>
+      <a
+        href="{{ Auth::user()->division ? route('projects') : route('manager.projects.index') }}"
+        class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition"
+      >
+        <i class="ti ti-folder text-base"></i>
         Projects
       </a>
-      <a href="{{ route('notifications.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-[#D4D2CF] transition-colors font-medium">
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-        Notification
+      <a
+        href="{{ Auth::user()->division ? route('notifications.index') : route('manager.reviews') }}"
+        class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition"
+      >
+        <i class="ti ti-bell text-base"></i>
+        {{ Auth::user()->division ? 'Notification' : 'Reviews' }}
       </a>
     </nav>
   </aside>
@@ -48,20 +84,7 @@
   <!-- MAIN WORKSPACE -->
   <main class="flex-1 bg-[#FAF8F5] min-h-screen flex flex-col relative overflow-hidden z-10 w-full">
     
-    <!-- TOP HEADER -->
-    <header class="flex justify-between items-center px-12 py-6 w-full">
-      <div class="font-extrabold text-2xl text-[#C21A23] flex items-center gap-2 logo-text uppercase tracking-wide">
-        PLANNER U <span class="text-gray-400 font-light mx-2 text-xl">X</span> BPA
-      </div>
-      <div class="flex items-center gap-4">
-        <button class="w-10 h-10 rounded-full bg-[#E6E4E2] flex items-center justify-center hover:bg-gray-300 transition relative">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#4A4A4A" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-        </button>
-        <div class="w-10 h-10 rounded-full overflow-hidden border border-gray-300 bg-gray-200 flex items-center justify-center font-bold text-gray-600">
-            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-        </div>
-      </div>
-    </header>
+    @include('partials.staff_header', ['hideSearchAndBell' => true])
 
     <!-- CENTERED PROFILE CONTENT -->
     <div class="flex-1 flex flex-col items-center justify-center relative -mt-20 z-10">

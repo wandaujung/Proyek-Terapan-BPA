@@ -95,19 +95,7 @@
   <main class="flex-1 flex flex-col overflow-hidden">
 
     <!-- TOPBAR -->
-    <header class="flex items-center justify-between px-8 py-4 bg-[#FCF9F4] sticky top-0 z-10 flex-shrink-0">
-
-      <div class="flex items-center gap-2">
-        <span class="brand text-2xl text-red">PLANNER U</span>
-        <span class="text-gray-300 font-light text-xl">×</span>
-        <span class="brand text-2xl text-red">BPA</span>
-      </div>
-
-      <a href="{{ route('profile') }}" class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none hover:ring-2 hover:ring-red transition cursor-pointer">
-        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-      </a>
-
-    </header>
+    @include('partials.staff_header')
 
     <!-- CONTENT -->
     <div class="flex-1 overflow-y-auto px-8 pb-10 flex flex-col gap-5">

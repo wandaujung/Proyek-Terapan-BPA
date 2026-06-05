@@ -130,8 +130,9 @@ class TaskController extends Controller
             'review_status' => 'approved'
         ]);
 
-        if ($task->user) {
-            $task->user->notify(new TaskReviewed($task, 'approved'));
+        $usersInDivision = \App\Models\User::where('division_id', $task->project->division_id)->get();
+        foreach ($usersInDivision as $u) {
+            $u->notify(new TaskReviewed($task, 'approved'));
         }
 
         return redirect()->route('manager.reviews')->with('success', 'Task approved successfully!');
@@ -145,8 +146,9 @@ class TaskController extends Controller
             'revision_notes' => $request->revision_notes
         ]);
 
-        if ($task->user) {
-            $task->user->notify(new TaskReviewed($task, 'revision', $request->revision_notes));
+        $usersInDivision = \App\Models\User::where('division_id', $task->project->division_id)->get();
+        foreach ($usersInDivision as $u) {
+            $u->notify(new TaskReviewed($task, 'revision', $request->revision_notes));
         }
 
         return redirect()->route('manager.reviews')->with('success', 'Revision requested successfully!');

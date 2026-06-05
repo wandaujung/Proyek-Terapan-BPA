@@ -18,15 +18,23 @@ class StaffDashboardController extends Controller
 
         // === STAT CARDS ===
 
-        // Active Projects: projects in this division that have at least one non-done task
-        $projects = Project::where('division_id', $divisionId)->with('tasks')->get();
+        // Active Projects: projects in this division that have at least one non-done task, or have no tasks yet.
+        $projects = Project::where('division_id', $divisionId)
+            ->orWhereHas('members', function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->with('tasks')->get();
 
         $activeProjects = $projects->filter(function ($p) {
-            return $p->tasks->where('status', '!=', 'done')->count() > 0;
+            return $p->tasks->count() === 0 || $p->tasks->where('status', '!=', 'done')->count() > 0;
         })->count();
 
         // Total tasks in this division
-        $allTasks = Task::whereHas('project', fn($q) => $q->where('division_id', $divisionId))->get();
+        $allTasks = Task::whereHas('project', function($q) use ($divisionId, $user) {
+            $q->where('division_id', $divisionId)
+              ->orWhereHas('members', function($q2) use ($user) {
+                  $q2->where('user_id', $user->id);
+              });
+        })->get();
         $totalTasks = $allTasks->count();
         $doneTasks = $allTasks->where('status', 'done')->count();
 
@@ -41,7 +49,12 @@ class StaffDashboardController extends Controller
         // === URGENT TASKS ===
         // Tasks that are overdue (end_date < today) or due today, and not done
         $today = Carbon::today()->toDateString();
-        $urgentTasks = Task::whereHas('project', fn($q) => $q->where('division_id', $divisionId))
+        $urgentTasks = Task::whereHas('project', function($q) use ($divisionId, $user) {
+            $q->where('division_id', $divisionId)
+              ->orWhereHas('members', function($q2) use ($user) {
+                  $q2->where('user_id', $user->id);
+              });
+        })
             ->where('status', '!=', 'done')
             ->where('end_date', '<=', $today)
             ->with('project')
@@ -83,9 +96,9 @@ class StaffDashboardController extends Controller
             ->map(function ($notif) {
                 $data = $notif->data;
                 return (object) [
-                    'icon' => ($data['status'] ?? '') === 'approved' ? 'ti-check' : 'ti-message',
-                    'title' => $data['task_title'] ?? 'Notification',
-                    'message' => $data['message'] ?? '',
+                    'icon' => ($data['action'] ?? '') === 'approved' ? 'ti-check' : 'ti-message',
+                    'title' => $data['title'] ?? 'Notification',
+                    'message' => $data['notes'] ?? '',
                     'time' => $notif->created_at->diffForHumans(),
                 ];
             });

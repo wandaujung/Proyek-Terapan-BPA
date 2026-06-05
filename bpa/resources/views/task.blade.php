@@ -483,18 +483,12 @@
           <!-- Primary PIC -->
           <div>
             <label class="modal-label">Primary PIC</label>
-            <div class="flex items-center gap-2 bg-[#f0ece6] rounded-xl px-3 py-2">
-              <div
-                class="w-7 h-7 rounded-full bg-[#b91c1c] flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                MT</div>
-              <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-gray-700 truncate">Marcus Thorne</p>
-                <p class="text-[10px] text-gray-400 truncate">Lead Editor</p>
-              </div>
-              <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+            <select id="detailTaskUserId" name="user_id" class="modal-input bg-[#f0ece6] rounded-xl px-3 py-2 w-full text-xs font-semibold text-gray-700">
+              <option value="">Select Assignee</option>
+              @foreach($availableUsers as $u)
+                <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->division->name ?? 'Manager' }})</option>
+              @endforeach
+            </select>
             <!-- Start Date -->
             <div>
               <label class="modal-label">Start Date</label>
@@ -665,18 +659,12 @@
           <!-- Primary PIC -->
           <div>
             <label class="modal-label">Primary PIC</label>
-            <div class="flex items-center gap-2 bg-[#f0ece6] rounded-xl px-3 py-2">
-              <div
-                class="w-7 h-7 rounded-full bg-[#b91c1c] flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                MT</div>
-              <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-gray-700 truncate">Marcus Thorne</p>
-                <p class="text-[10px] text-gray-400 truncate">Lead Editor</p>
-              </div>
-              <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+            <select id="editTaskUserId" name="user_id" class="modal-input bg-[#f0ece6] rounded-xl px-3 py-2 w-full text-xs font-semibold text-gray-700">
+              <option value="">Select Assignee</option>
+              @foreach($availableUsers as $u)
+                <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->division->name ?? 'Manager' }})</option>
+              @endforeach
+            </select>
           </div>
           <!-- Start Date -->
           <div>
@@ -797,7 +785,6 @@
       input.value = '';
       toggleSubTaskForm();
     }
-    // Detail Modal
     function openDetailModal(task) {
       document.getElementById('detailForm').action = `/tasks/update/${task.id}`;
       document.getElementById('detailModalTitle').textContent = task.title;
@@ -805,6 +792,7 @@
       document.getElementById('detailTaskDesc').value = task.description || '';
       document.getElementById('detailTaskStart').value = task.start_date || '';
       document.getElementById('detailTaskEnd').value = task.end_date || '';
+      document.getElementById('detailTaskUserId').value = task.user_id || '';
       document.getElementById('detailTaskBrief').value = task.brief_link || '';
       document.getElementById('detailTaskSubmission').value = task.submission_link || '';
 

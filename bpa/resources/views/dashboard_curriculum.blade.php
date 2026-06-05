@@ -163,42 +163,7 @@
   ══════════════════════════════════════════ -->
     <main class="flex-1 flex flex-col overflow-hidden">
       <!-- ── TOPBAR ── -->
-      <header
-        class="flex items-center justify-between px-8 py-4 bg-[#FCF9F4] sticky top-0 z-10 flex-shrink-0"
-      >
-        <!-- Left: Logo -->
-        <div class="flex items-center gap-2">
-          <span class="brand text-2xl text-red">PLANNER U</span>
-          <span class="text-gray-300 font-light text-xl">×</span>
-          <span class="brand text-2xl text-red">BPA</span>
-        </div>
-
-        <!-- Right: Search Bar + Bell + Avatar -->
-        <div class="flex items-center gap-3">
-          <div class="search-wrapper">
-            <i class="ti ti-search search-icon"></i>
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Search projects..."
-            />
-          </div>
-          <!-- Bell -->
-          <div class="avatar-ring">
-            <button
-              class="w-9 h-9 rounded-full bg-red hover:bg-red-dark transition text-white flex items-center justify-center"
-            >
-              <i class="ti ti-bell text-base"></i>
-            </button>
-          </div>
-          <!-- Avatar Link to Profile -->
-          <a href="{{ route('profile') }}" class="avatar-ring cursor-pointer hover:ring-2 hover:ring-red transition" style="display: block;">
-            <div class="w-9 h-9 rounded-full bg-gray-300 border-2 border-white shadow flex items-center justify-center text-xs font-bold text-gray-600 select-none">
-              {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-            </div>
-          </a>
-        </div>
-      </header>
+      @include('partials.staff_header')
 
       <!-- ── SCROLLABLE CONTENT ── -->
       <div class="flex-1 overflow-y-auto px-8 pb-10 flex flex-col gap-5">
@@ -313,7 +278,7 @@
               </div>
               @empty
               <div class="py-4 text-center text-xs text-gray-400">
-                No urgent tasks — great job! 🎉
+                No urgent tasks — great job! 
               </div>
               @endforelse
             </div>
