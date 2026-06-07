@@ -56,15 +56,10 @@ class StaffDashboardController extends Controller
               });
         })
             ->where('status', '!=', 'done')
-            ->where('end_date', '<=', $today)
             ->with('project')
             ->orderBy('end_date', 'asc')
             ->limit(5)
-            ->get()
-            ->map(function ($task) use ($today) {
-                $task->urgency_label = $task->end_date < $today ? 'Overdue' : 'Today';
-                return $task;
-            });
+            ->get();
 
         // === TEAM PERFORMANCE ===
         // Members in this division, ranked by number of completed tasks

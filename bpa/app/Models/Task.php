@@ -35,4 +35,15 @@ class Task extends Model
     {
         return $this->hasMany(SubTask::class)->orderBy('sort_order');
     }
+
+    public function getUrgencyLabelAttribute()
+    {
+        $today = \Carbon\Carbon::today()->toDateString();
+        if ($this->end_date < $today) {
+            return 'Overdue';
+        } elseif ($this->end_date == $today) {
+            return 'Due Today';
+        }
+        return 'Upcoming';
+    }
 }

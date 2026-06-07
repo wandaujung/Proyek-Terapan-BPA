@@ -56,7 +56,7 @@
         </div>
 
         <!-- New Project -->
-        <button
+        <button onclick="window.location.href='{{ route('projects') }}?new_project=true'"
             class="flex items-center gap-2 bg-red hover:bg-red-dark transition text-white rounded-2xl px-4 py-3 text-sm font-semibold">
             <i class="ti ti-plus text-base"></i>
             New Project

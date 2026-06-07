@@ -110,16 +110,18 @@
   <!-- SIDEBAR -->
   <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5">
     <div class="brand text-3xl text-red px-1">
-      PLANNER U
+      <img src="{{ asset('images/logo-planneru.png') }}" alt="Planner U">
     </div>
 
-    <!-- BUTTON OPEN MODAL (Disabled visually for consistency) -->
-    <div style="opacity:0; pointer-events:none;" class="flex items-center gap-2 bg-red text-white rounded-2xl px-4 py-3 text-sm font-semibold">
-      <i class="ti ti-plus text-base"></i> New Project
-    </div>
+    <!-- New Project -->
+    <button onclick="window.location.href='{{ route('projects') }}?new_project=true'"
+        class="flex items-center gap-2 bg-red hover:bg-red-dark transition text-white rounded-2xl px-4 py-3 text-sm font-semibold">
+        <i class="ti ti-plus text-base"></i>
+        New Project
+    </button>
 
     <!-- NAV -->
-    <nav class="flex flex-col gap-1 -mt-16">
+    <nav class="flex flex-col gap-1">
       <a href="{{ Auth::user()->division ? '/dashboard/' . strtolower(Auth::user()->division->name) : route('manager.dashboard') }}"
          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
         <i class="ti ti-layout-dashboard text-base"></i>

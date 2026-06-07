@@ -106,7 +106,8 @@ class TaskController extends Controller
             ->where('status', 'review')
             ->update([
                 'review_status' => 'pending',
-                'manager_email' => $request->manager_email
+                'manager_email' => $request->manager_email,
+                'submission_notes' => $request->submission_notes
             ]);
 
         return back()->with('success', 'Tasks submitted for review');

@@ -222,7 +222,7 @@
 
     <!-- BUTTON OPEN MODAL -->
     <button
-      id="openModal"
+      onclick="window.location.href='{{ route('projects') }}?new_project=true'"
       class="flex items-center gap-2 bg-red hover:bg-red-dark transition text-white rounded-2xl px-4 py-3 text-sm font-semibold"
     >
       <i class="ti ti-plus text-base"></i>
@@ -589,19 +589,34 @@
         <!-- Project Board -->
         <div>
           <label class="modal-label">Project Board</label>
-          <div class="flex items-center gap-3 bg-[#f0ece6] rounded-xl px-4 py-3">
-            <div class="w-8 h-8 rounded-lg bg-[#e8e2da] flex items-center justify-center text-[#b91c1c]">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+          <div class="flex items-center gap-3 bg-[#FAF9F7] border border-gray-100 rounded-xl px-4 py-3 cursor-not-allowed opacity-80">
+            <div class="w-8 h-8 rounded-lg bg-[#EAE5DF] flex items-center justify-center text-[#b91c1c]">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
             </div>
             <span id="submitModalProjectName" class="text-sm font-semibold text-gray-800 flex-1">Proyek PM</span>
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
           </div>
         </div>
 
         <!-- Manager Email -->
         <div>
-          <label class="modal-label">Manager Email</label>
-          <input type="email" name="manager_email" required placeholder="manager@planneru.com" class="modal-input" />
+          <label class="modal-label">Manager / Reviewer</label>
+          <div class="flex items-center gap-3">
+            <div class="flex-1 flex items-center gap-2 bg-[#FAF9F7] border border-gray-100 rounded-xl px-4 py-3 focus-within:border-[#b91c1c] transition-colors">
+              <span class="text-gray-400 font-semibold text-sm">@</span>
+              <input type="email" name="manager_email" required placeholder="Email..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none" />
+            </div>
+            <button type="button" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white text-sm font-semibold px-5 py-3 rounded-xl flex items-center gap-1.5 transition-colors shadow-sm shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+              Add
+            </button>
+          </div>
+        </div>
+
+        <!-- Notes for Reviewer -->
+        <div>
+          <label class="modal-label">Notes for Reviewer</label>
+          <textarea name="submission_notes" placeholder="Describe any specific areas that need attention or context regarding the assets..." class="w-full bg-[#FAF9F7] border border-gray-100 rounded-xl px-4 py-3 focus:border-[#b91c1c] transition-colors resize-none h-24 outline-none text-sm font-semibold text-gray-800 placeholder-gray-400"></textarea>
         </div>
 
       </div>

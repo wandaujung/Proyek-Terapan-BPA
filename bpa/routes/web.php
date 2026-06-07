@@ -111,6 +111,10 @@ Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsR
     ->middleware('auth')
     ->name('notifications.read');
 
+Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+    ->middleware('auth')
+    ->name('notifications.readAll');
+
 Route::post('/tasks/approve/{task}',
     [TaskController::class,'approve'])
     ->name('tasks.approve');

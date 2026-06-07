@@ -55,7 +55,7 @@
   <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5">
 
     <div class="brand text-3xl text-red px-1">
-      PLANNER U
+      <img src="{{ asset('images/logo-planneru.png') }}" alt="Planner U">
     </div>
 
     <!-- BUTTON OPEN MODAL -->
@@ -158,6 +158,8 @@
     <!-- ACTION -->
     <div class="flex items-center gap-2">
 
+
+
       <!-- EDIT BUTTON -->
       <button
         onclick="event.stopPropagation(); openEditModal(
@@ -167,6 +169,7 @@
           '{{ $project->end_project }}'
         )"
         class="w-9 h-9 rounded-full bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition"
+        title="Edit Project"
       >
         <i class="ti ti-edit text-blue-500 text-sm"></i>
       </button>
@@ -657,8 +660,24 @@ function addMember(user)
     }
   });
 
+
+
+  // Open create modal if URL parameter is present
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('new_project') === 'true') {
+      const createModal = document.getElementById('projectModal');
+      if (createModal) {
+        createModal.classList.remove('hidden');
+        // Optionally, remove the parameter from the URL without reloading
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  });
+
 </script>
   
+
 
 </body>
 </html>

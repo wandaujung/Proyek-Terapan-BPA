@@ -69,7 +69,7 @@
           </div>
           
           <blockquote class="text-gray-700 italic text-[15px] font-medium leading-relaxed">
-            "{{ $task->description ?? 'No description provided.' }}"
+            "{{ $task->submission_notes ?? 'No notes provided.' }}"
           </blockquote>
         </div>
 
