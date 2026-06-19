@@ -110,18 +110,23 @@ class TaskController extends Controller
                 'submission_notes' => $request->submission_notes
             ]);
 
-        return back()->with('success', 'Tasks submitted for review');
+        return back()->with('success', 'All pending tasks have been successfully submitted for review!');
     }
 
     public function submit(Request $request, Task $task)
     {
+        $request->validate([
+            'manager_email' => 'required|email'
+        ]);
+
         $task->update([
             'status' => 'review',
             'review_status' => 'pending',
-            'manager_email' => $request->manager_email
+            'manager_email' => $request->manager_email,
+            'submission_notes' => $request->submission_notes
         ]);
 
-        return back();
+        return back()->with('success', 'Task "' . $task->title . '" has been successfully submitted for review!');
     }
 
     public function approve(Task $task)

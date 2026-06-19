@@ -50,7 +50,7 @@ class ProjectController extends Controller
         $project->members()->attach($request->members);
     }
 
-    return redirect()->back();
+    return redirect()->back()->with('success', 'Project "' . $project->name . '" has been successfully created!');
 }
 
     public function edit($id)
@@ -76,7 +76,7 @@ class ProjectController extends Controller
             'end_project' => $request->end_project,
         ]);
 
-        return redirect()->route('projects');
+        return redirect()->route('projects')->with('success', 'Project "' . $project->name . '" has been successfully updated!');
     }
 
     public function destroy($id)
@@ -85,7 +85,7 @@ class ProjectController extends Controller
 
         $project->delete();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Project has been deleted successfully!');
     }
     public function searchUsers(Request $request)
 {

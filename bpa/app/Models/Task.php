@@ -17,6 +17,7 @@ class Task extends Model
         'review_status',
         'manager_email',
         'revision_notes',
+        'submission_notes',
         'user_id',
         'project_id'
     ];

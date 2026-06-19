@@ -51,6 +51,55 @@
 
 <body class="flex h-screen overflow-hidden bg-[#FCF9F4] text-[#1A1A1A]">
 
+  <!-- Success Confirmation Modal -->
+  @if(session('success'))
+  <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 z-50" onclick="closeSuccessModal()">
+    <div class="bg-[#FAF8F5] rounded-[32px] shadow-2xl w-full max-w-sm px-8 py-10 flex flex-col items-center text-center transform transition-all duration-300" onclick="event.stopPropagation()">
+
+      <!-- Icon -->
+      <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #b2d8cc;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="#3a8c72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <!-- Title -->
+      <h2 class="brand text-2xl font-bold text-gray-900 leading-snug mb-4 uppercase tracking-wide">
+        Action Successful
+      </h2>
+
+      <!-- Description -->
+      <p class="text-gray-500 text-sm leading-relaxed mb-8">
+        {{ session('success') }}
+      </p>
+
+      <!-- Button -->
+      <button onclick="closeSuccessModal()" class="w-full py-4 rounded-full text-white font-semibold text-sm tracking-wide bg-[#c0272d] hover:bg-[#a82025] transition-colors shadow-md shadow-[#c0272d]/25">
+        Close
+      </button>
+
+      <!-- Encrypted Label -->
+      <div class="flex items-center gap-2 mt-8 text-gray-400 text-xs font-medium tracking-widest uppercase">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Encrypted
+      </div>
+
+    </div>
+  </div>
+  <script>
+    function closeSuccessModal() {
+      const modal = document.getElementById('successModal');
+      if (modal) modal.remove();
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSuccessModal();
+    });
+  </script>
+  @endif
+
   <!-- SIDEBAR -->
   <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5">
 

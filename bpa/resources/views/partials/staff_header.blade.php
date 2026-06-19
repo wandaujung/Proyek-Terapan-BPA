@@ -30,9 +30,7 @@
             @php
                $unreadCount = Auth::user() ? Auth::user()->unreadNotifications->count() : 0;
             @endphp
-            @if($unreadCount > 0)
-              <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-yellow-400 rounded-full border-2 border-red"></span>
-            @endif
+            <span id="notif-badge" class="absolute top-0 right-0 w-2.5 h-2.5 bg-yellow-400 rounded-full border-2 border-red {{ $unreadCount > 0 ? '' : 'hidden' }}"></span>
           </div>
         </button>
 
@@ -41,10 +39,7 @@
           <!-- Header -->
           <div class="flex items-center justify-between px-6 py-5">
             <span class="font-bold text-[#1A1A1A] text-base">Notifications</span>
-            <form action="{{ route('notifications.readAll') }}" method="POST" class="m-0">
-              @csrf
-              <button type="submit" class="text-sm font-semibold text-[#8C3A27] hover:underline bg-transparent border-none cursor-pointer">Mark all as read</button>
-            </form>
+            <button type="button" id="markAllReadBtn" class="text-sm font-semibold text-[#8C3A27] hover:underline bg-transparent border-none cursor-pointer">Mark all as read</button>
           </div>
 
           <!-- Body -->
@@ -53,7 +48,9 @@
               $headerNotifs = Auth::user() ? Auth::user()->notifications()->limit(4)->get() : collect();
             @endphp
             @forelse($headerNotifs as $notif)
-              <div class="bg-white rounded-2xl p-4 flex gap-4 {{ $notif->read_at ? 'opacity-70' : '' }}">
+              <div class="rounded-2xl p-4 flex gap-4 notif-card-item transition-all duration-200 {{ $notif->read_at ? 'bg-[#EDEBE6] opacity-70' : 'bg-white cursor-pointer hover:bg-black/[0.02]' }}"
+                   data-id="{{ $notif->id }}"
+                   data-read="{{ $notif->read_at ? 'true' : 'false' }}">
                 <!-- Icon -->
                 @if($notif->data['action'] == 'approved')
                   <div class="w-10 h-10 rounded-full bg-[#EBF5EE] text-[#2F6B43] flex items-center justify-center flex-shrink-0">
@@ -111,6 +108,10 @@
 </header>
 
 <script>
+  window.Laravel = {
+    csrfToken: '{{ csrf_token() }}'
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('notifDropdownBtn');
     const menu = document.getElementById('notifDropdownMenu');
@@ -125,6 +126,148 @@
         if (!menu.contains(e.target) && !btn.contains(e.target)) {
           menu.classList.add('hidden');
         }
+      });
+    }
+
+    // Function to mark a single notification as read
+    function markAsRead(notifId, cardElements) {
+      fetch(`/notifications/${notifId}/read`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': window.Laravel.csrfToken,
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.success) {
+          console.error('Failed to mark notification as read');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+
+      // Optimistically update styling on all card instances with this ID
+      cardElements.forEach(card => {
+        card.dataset.read = 'true';
+        
+        // Handle dropdown card styling
+        if (card.classList.contains('notif-card-item') && !card.classList.contains('notif-card')) {
+          card.classList.remove('bg-white', 'cursor-pointer', 'hover:bg-black/[0.02]');
+          card.classList.add('bg-[#EDEBE6]', 'opacity-70');
+        } 
+        // Handle main page card styling (.notif-card)
+        else {
+          card.classList.remove('cursor-pointer', 'hover:bg-black/[0.01]');
+          card.classList.add('read');
+          
+          // Remove mark-as-read form if present on the page
+          const form = card.querySelector('form');
+          if (form) {
+            form.remove();
+          }
+        }
+      });
+
+      updateBadge();
+    }
+
+    // Function to update the bell notification badge
+    function updateBadge() {
+      const badge = document.getElementById('notif-badge');
+      if (!badge) return;
+      
+      // Select dropdown unread items
+      const dropdownUnread = document.querySelectorAll('.notif-card-item[data-read="false"]');
+      if (dropdownUnread.length === 0) {
+        badge.classList.add('hidden');
+      } else {
+        badge.classList.remove('hidden');
+      }
+    }
+
+    // Add global click listener for .notif-card-item clicks (using event delegation)
+    document.addEventListener('click', function(e) {
+      const card = e.target.closest('.notif-card-item');
+      if (!card) return;
+
+      // Do nothing if already read
+      if (card.dataset.read === 'true') return;
+
+      // If clicked inside an interactive element, check if it's the "Mark as read" form/button
+      const interactive = e.target.closest('a, button, form');
+      if (interactive) {
+        if (interactive.tagName === 'FORM' || interactive.closest('form')) {
+          const form = interactive.tagName === 'FORM' ? interactive : interactive.closest('form');
+          if (form.action && (form.action.includes('/read') && !form.action.includes('/read-all'))) {
+            e.preventDefault();
+            const notifId = card.dataset.id;
+            const relatedCards = document.querySelectorAll(`.notif-card-item[data-id="${notifId}"]`);
+            markAsRead(notifId, relatedCards);
+          }
+        }
+        return; // Don't trigger card click handler if we clicked another link/button
+      }
+
+      // Card clicked directly
+      const notifId = card.dataset.id;
+      const relatedCards = document.querySelectorAll(`.notif-card-item[data-id="${notifId}"]`);
+      markAsRead(notifId, relatedCards);
+    });
+
+    // Handle Mark all as read button
+    const markAllReadBtn = document.getElementById('markAllReadBtn');
+    if (markAllReadBtn) {
+      markAllReadBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Select all unread items
+        const unreadCards = document.querySelectorAll('.notif-card-item[data-read="false"]');
+        
+        // Optimistically update all cards in dropdown and page
+        unreadCards.forEach(card => {
+          card.dataset.read = 'true';
+          if (!card.classList.contains('notif-card')) {
+            card.classList.remove('bg-white', 'cursor-pointer', 'hover:bg-black/[0.02]');
+            card.classList.add('bg-[#EDEBE6]', 'opacity-70');
+          } else {
+            card.classList.remove('cursor-pointer', 'hover:bg-black/[0.01]');
+            card.classList.add('read');
+            const form = card.querySelector('form');
+            if (form) {
+              form.remove();
+            }
+          }
+        });
+
+        // Hide badge
+        const badge = document.getElementById('notif-badge');
+        if (badge) {
+          badge.classList.add('hidden');
+        }
+
+        // Call API
+        fetch('/notifications/read-all', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': window.Laravel.csrfToken,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (!data.success) {
+            console.error('Failed to mark all as read');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
       });
     }
   });

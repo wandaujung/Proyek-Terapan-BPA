@@ -50,9 +50,14 @@
       display: flex;
       gap: 18px;
       align-items: flex-start;
-      transition: box-shadow 0.18s;
+      transition: box-shadow 0.18s, background-color 0.2s, opacity 0.2s;
     }
     .notif-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+    .notif-card.read {
+      background: #EDEBE6;
+      opacity: 0.7;
+      box-shadow: none !important;
+    }
     .notif-icon {
       width: 42px; height: 42px;
       border-radius: 50%;
@@ -166,7 +171,9 @@
             $projectId = $notification->data['project_id'] ?? ($task ? $task->project_id : null);
           @endphp
           
-          <div class="notif-card {{ $notification->read_at ? 'opacity-75' : '' }}">
+          <div class="notif-card notif-card-item {{ $notification->read_at ? 'read' : 'cursor-pointer hover:bg-black/[0.01]' }}"
+               data-id="{{ $notification->id }}"
+               data-read="{{ $notification->read_at ? 'true' : 'false' }}">
             @if($notification->data['action'] == 'approved')
               <!-- Approved Icon -->
               <div class="notif-icon" style="background:#d1f0e0;">
@@ -208,8 +215,8 @@
                 @endif
 
                 @if(is_null($notification->read_at))
-                  <form action="{{ route('notifications.read', $notification->id) }}" method="POST">
-                    @csrf @method('PATCH')
+                  <form action="{{ route('notifications.read', $notification->id) }}" method="POST" class="m-0">
+                    @csrf
                     <button type="submit" class="text-xs font-semibold text-gray-400 hover:text-gray-600 underline mt-2 inline-block">
                       Mark as read
                     </button>

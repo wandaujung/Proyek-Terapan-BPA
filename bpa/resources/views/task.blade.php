@@ -213,6 +213,52 @@
 
 <body class="flex h-screen overflow-hidden bg-[#FCF9F4] text-[#1A1A1A]">
 
+  <!-- Success Confirmation Modal -->
+  @if(session('success'))
+  <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 z-50" onclick="closeSuccessModal()">
+    <div class="bg-[#FAF8F5] rounded-[32px] shadow-2xl w-full max-w-sm px-8 py-10 flex flex-col items-center text-center transform transition-all duration-300" onclick="event.stopPropagation()">
+
+      <!-- Icon -->
+      <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #b2d8cc;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="#3a8c72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <!-- Title -->
+      <h2 class="brand text-2xl font-bold text-gray-900 leading-snug mb-4 uppercase tracking-wide">
+        Submitted<br>Successfully
+      </h2>
+
+      <!-- Description -->
+      <p class="text-gray-500 text-sm leading-relaxed mb-8">
+        {{ session('success') }}
+      </p>
+
+      <!-- Button -->
+      <button onclick="window.location.href='{{ route('projects') }}'" class="w-full py-4 rounded-full text-white font-semibold text-sm tracking-wide bg-[#c0272d] hover:bg-[#a82025] transition-colors shadow-md shadow-[#c0272d]/25">
+        Back to Projects
+      </button>
+
+      <!-- Encrypted Label -->
+      <div class="flex items-center gap-2 mt-8 text-gray-400 text-xs font-medium tracking-widest uppercase">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Encrypted
+      </div>
+
+    </div>
+  </div>
+  <script>
+    function closeSuccessModal() {
+      const modal = document.getElementById('successModal');
+      if (modal) modal.remove();
+    }
+  </script>
+  @endif
+
   <!-- SIDEBAR -->
   <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5">
 
@@ -569,6 +615,8 @@
       <div class="px-8 py-5 border-t border-gray-200 flex items-center justify-end gap-3">
         <button type="button" onclick="closeDetailModal()"
           class="text-sm text-gray-500 hover:text-gray-700 font-semibold px-5 py-2.5 rounded-xl transition-colors">Cancel</button>
+        <button type="button" id="detailSubmitBtn" onclick="submitTaskFromDetail()"
+          class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm hidden">Submit for Review</button>
         <button type="submit"
           class="text-sm bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold px-6 py-2.5 rounded-xl transition-colors shadow-sm">Save</button>
       </div>
@@ -578,17 +626,17 @@
 
   <!-- Submit Modal -->
   <div id="submitModal" class="modal-overlay" onclick="handleSubmitOverlayClick(event)">
-    <form id="submitForm" method="POST" action="" class="modal-box !max-w-[480px]" onclick="event.stopPropagation()">
+    <form id="submitForm" method="POST" action="" onsubmit="dragRevertFn = null;" class="modal-box !max-w-[480px]" onclick="event.stopPropagation()">
       @csrf
       <div class="px-8 pt-8 pb-6 border-b border-gray-200">
-        <h2 class="brand-font text-2xl text-gray-800 tracking-wide mb-1">Submit Project for Review</h2>
+        <h2 id="submitModalTitle" class="brand-font text-2xl text-gray-800 tracking-wide mb-1">Submit Project for Review</h2>
         <p class="text-xs text-gray-500 leading-relaxed">Ensure all assets are finalized and linked before submission. Your manager will receive a notification to begin the editorial review process.</p>
       </div>
 
       <div class="px-8 py-6 flex flex-col gap-6">
         <!-- Project Board -->
         <div>
-          <label class="modal-label">Project Board</label>
+          <label id="submitModalBoardLabel" class="modal-label">Project Board</label>
           <div class="flex items-center gap-3 bg-[#FAF9F7] border border-gray-100 rounded-xl px-4 py-3 cursor-not-allowed opacity-80">
             <div class="w-8 h-8 rounded-lg bg-[#EAE5DF] flex items-center justify-center text-[#b91c1c]">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
@@ -800,7 +848,11 @@
       input.value = '';
       toggleSubTaskForm();
     }
+    let currentDetailTask = null;
+    let dragRevertFn = null;
+
     function openDetailModal(task) {
+      currentDetailTask = task;
       document.getElementById('detailForm').action = `/tasks/update/${task.id}`;
       document.getElementById('detailModalTitle').textContent = task.title;
       document.getElementById('detailTaskTitle').value = task.title;
@@ -819,10 +871,20 @@
           });
       }
 
+      const detailSubmitBtn = document.getElementById('detailSubmitBtn');
+      if (detailSubmitBtn) {
+        if (task.status !== 'review' && task.status !== 'done') {
+          detailSubmitBtn.classList.remove('hidden');
+        } else {
+          detailSubmitBtn.classList.add('hidden');
+        }
+      }
+
       document.getElementById('detailModal').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
     function closeDetailModal() {
+      currentDetailTask = null;
       document.getElementById('detailModal').classList.remove('open');
       document.body.style.overflow = '';
     }
@@ -883,20 +945,48 @@
       input.value = '';
       toggleDetailSubTaskForm();
     }
+    
+    function submitTaskFromDetail() {
+      if (!currentDetailTask) return;
+      const taskId = currentDetailTask.id;
+      const taskTitle = currentDetailTask.title;
+      closeDetailModal();
+      openSubmitModal('{{ $project->id }}', '{{ $project->name }}', taskId, taskTitle);
+    }
+
     // Submit Modal
-    function openSubmitModal(projectId, projectName) {
+    function openSubmitModal(projectId, projectName, taskId = null, taskTitle = null) {
       document.getElementById('submitModal').classList.add('open');
       document.body.style.overflow = 'hidden';
-      if (projectId) {
-        document.getElementById('submitForm').action = '/projects/' + projectId + '/submit-reviews';
-      }
-      if (projectName) {
-        document.getElementById('submitModalProjectName').innerText = projectName;
+      
+      const titleEl = document.getElementById('submitModalTitle');
+      const labelEl = document.getElementById('submitModalBoardLabel');
+      const nameEl = document.getElementById('submitModalProjectName');
+      const formEl = document.getElementById('submitForm');
+      
+      formEl.reset();
+
+      if (taskId) {
+        if (titleEl) titleEl.innerText = "Submit Task for Review";
+        if (labelEl) labelEl.innerText = "Task Title";
+        if (nameEl) nameEl.innerText = taskTitle;
+        formEl.action = '/tasks/submit/' + taskId;
+      } else {
+        if (titleEl) titleEl.innerText = "Submit Project for Review";
+        if (labelEl) labelEl.innerText = "Project Board";
+        if (nameEl) nameEl.innerText = projectName;
+        if (projectId) {
+          formEl.action = '/projects/' + projectId + '/submit-reviews';
+        }
       }
     }
     function closeSubmitModal() {
       document.getElementById('submitModal').classList.remove('open');
       document.body.style.overflow = '';
+      if (dragRevertFn) {
+        dragRevertFn();
+        dragRevertFn = null;
+      }
     }
     function handleSubmitOverlayClick(e) {
       if (e.target === document.getElementById('submitModal')) closeSubmitModal();
@@ -904,8 +994,57 @@
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { closeModal(); closeDetailModal(); closeSubmitModal(); }
+      if (e.key === 'Escape') { 
+        closeModal(); 
+        closeDetailModal(); 
+        closeSubmitModal(); 
+        if (typeof closeSuccessModal === 'function') closeSuccessModal();
+      }
     });
+
+    // Toast Notification helper
+    function showToast(message, type = 'success') {
+      const existing = document.getElementById('dynamicToast');
+      if (existing) existing.remove();
+
+      const bgClass = type === 'error' ? 'bg-[#b91c1c]' : 'bg-[#137333]';
+      const title = type === 'error' ? 'Error' : 'Success';
+      const icon = type === 'error' 
+        ? `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`
+        : `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`;
+
+      const toast = document.createElement('div');
+      toast.id = 'dynamicToast';
+      toast.className = `fixed top-6 right-6 ${bgClass} text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 z-50 transition-all duration-500 transform translate-y-[-20px] opacity-0`;
+      toast.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+          ${icon}
+        </div>
+        <div>
+          <p class="font-bold text-sm">${title}</p>
+          <p class="text-xs opacity-90">${message}</p>
+        </div>
+        <button onclick="document.getElementById('dynamicToast').remove()" class="text-white/70 hover:text-white ml-2 bg-transparent border-none cursor-pointer">
+          <i class="ti ti-x"></i>
+        </button>
+      `;
+
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('translate-y-[-20px]', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+      }, 50);
+
+      setTimeout(() => {
+        const el = document.getElementById('dynamicToast');
+        if (el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(-20px)';
+          setTimeout(() => el.remove(), 500);
+        }
+      }, 4000);
+    }
 
     // Drag & Drop — SortableJS
     const statusMap = {
@@ -943,6 +1082,22 @@
           const taskId = evt.item.dataset.taskId;
           const newStatus = statusMap[evt.to.id];
           if (!taskId || !newStatus) return;
+          
+          if (newStatus === 'done') {
+            // Revert drag immediately
+            const originalParent = evt.from;
+            const nextSibling = evt.nextSibling;
+            if (nextSibling) {
+              originalParent.insertBefore(evt.item, nextSibling);
+            } else {
+              originalParent.appendChild(evt.item);
+            }
+            updateCounters();
+            
+            showToast("Tasks can only be marked as Done via Manager approval.", "error");
+            return;
+          }
+          
           fetch(`/tasks/status/${taskId}`, {
             method: 'POST',
             headers: {
