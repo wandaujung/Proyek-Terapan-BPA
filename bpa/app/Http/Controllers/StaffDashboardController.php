@@ -90,10 +90,26 @@ class StaffDashboardController extends Controller
             ->get()
             ->map(function ($notif) {
                 $data = $notif->data;
+                $action = $data['action'] ?? '';
+                
+                if ($action === 'approved') {
+                    $icon = 'ti-circle-check-filled';
+                    $message = 'Task approved and archived.';
+                } elseif ($action === 'revision') {
+                    $icon = 'ti-file-description';
+                    $message = 'Revision requested: ' . ($data['notes'] ?? '');
+                } elseif ($action === 'removed') {
+                    $icon = 'ti-trash';
+                    $message = 'Project removed from workspace.';
+                } else {
+                    $icon = 'ti-circle-plus-filled';
+                    $message = 'Project added to workspace.';
+                }
+
                 return (object) [
-                    'icon' => ($data['action'] ?? '') === 'approved' ? 'ti-check' : 'ti-message',
+                    'icon' => $icon,
                     'title' => $data['title'] ?? 'Notification',
-                    'message' => $data['notes'] ?? '',
+                    'message' => $message,
                     'time' => $notif->created_at->diffForHumans(),
                 ];
             });

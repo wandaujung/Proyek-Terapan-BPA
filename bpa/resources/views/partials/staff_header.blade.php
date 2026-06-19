@@ -60,6 +60,10 @@
                   <div class="w-10 h-10 rounded-full bg-[#EEDDDA] text-[#D21C1C] flex items-center justify-center flex-shrink-0">
                     <i class="ti ti-file-description text-xl"></i>
                   </div>
+                @elseif($notif->data['action'] == 'removed')
+                  <div class="w-10 h-10 rounded-full bg-[#EEDDDA] text-[#D21C1C] flex items-center justify-center flex-shrink-0">
+                    <i class="ti ti-trash text-xl"></i>
+                  </div>
                 @else
                   <div class="w-10 h-10 rounded-full bg-[#E5EFFF] text-[#0066FF] flex items-center justify-center flex-shrink-0">
                     <i class="ti ti-circle-plus-filled text-xl"></i>
@@ -70,7 +74,7 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between mb-1">
                     <p class="text-sm font-bold text-[#1A1A1A] truncate">
-                      @if($notif->data['action'] == 'approved') Manager Approval @elseif($notif->data['action'] == 'revision') Revision Request @else New Project Added @endif
+                      @if($notif->data['action'] == 'approved') Manager Approval @elseif($notif->data['action'] == 'revision') Revision Request @elseif($notif->data['action'] == 'removed') Project Removed @else New Project Added @endif
                     </p>
                     <span class="text-[11px] font-medium text-gray-400 whitespace-nowrap">{{ $notif->created_at->diffForHumans(null, true, true) }} ago</span>
                   </div>
@@ -79,6 +83,8 @@
                       '{{ $notif->data['title'] }}' approved.
                     @elseif($notif->data['action'] == 'revision')
                       '{{ $notif->data['title'] }}' needs attention.
+                    @elseif($notif->data['action'] == 'removed')
+                      '{{ $notif->data['title'] }}' removed from workspace.
                     @else
                       '{{ $notif->data['title'] }}' added to workspace.
                     @endif

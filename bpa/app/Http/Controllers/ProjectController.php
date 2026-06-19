@@ -50,6 +50,18 @@ class ProjectController extends Controller
         $project->members()->attach($request->members);
     }
 
+    // Refresh members relationship to include newly attached members
+    $project->load('members');
+
+    // Notify division staff and collaborators
+    $divisionUsers = User::where('division_id', $project->division_id)->get();
+    $members = $project->members;
+    $usersToNotify = $divisionUsers->merge($members);
+
+    foreach ($usersToNotify as $userToNotify) {
+        $userToNotify->notify(new \App\Notifications\ProjectNotification($project, 'added'));
+    }
+
     return redirect()->back()->with('success', 'Project "' . $project->name . '" has been successfully created!');
 }
 
@@ -81,7 +93,16 @@ class ProjectController extends Controller
 
     public function destroy($id)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::with('members')->findOrFail($id);
+
+        // Notify division staff and collaborators before deletion
+        $divisionUsers = User::where('division_id', $project->division_id)->get();
+        $members = $project->members;
+        $usersToNotify = $divisionUsers->merge($members);
+
+        foreach ($usersToNotify as $userToNotify) {
+            $userToNotify->notify(new \App\Notifications\ProjectNotification($project, 'removed'));
+        }
 
         $project->delete();
 
