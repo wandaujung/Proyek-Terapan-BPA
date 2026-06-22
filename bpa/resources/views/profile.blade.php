@@ -49,38 +49,7 @@
 <body class="bg-[#FAF8F5] text-gray-900 m-0 overflow-hidden flex min-h-screen">
 
     <!-- SIDEBAR -->
-    <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5 relative z-20 h-screen">
-        <!-- Logo -->
-        <div class="brand text-3xl text-red px-1">
-            <img src="{{ asset('images/logo-planneru.png') }}" alt="Planner U">
-        </div>
-
-        <!-- New Project -->
-        <button onclick="window.location.href='{{ route('projects') }}?new_project=true'"
-            class="flex items-center gap-2 bg-red hover:bg-red-dark transition text-white rounded-2xl px-4 py-3 text-sm font-semibold">
-            <i class="ti ti-plus text-base"></i>
-            New Project
-        </button>
-
-        <!-- Nav -->
-        <nav class="flex flex-col gap-1">
-            <a href="{{ Auth::user()->division ? '/dashboard/' . strtolower(Auth::user()->division->name) : route('manager.dashboard') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
-                <i class="ti ti-layout-dashboard text-base"></i>
-                Dashboard
-            </a>
-            <a href="{{ Auth::user()->division ? route('projects') : route('manager.projects.index') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
-                <i class="ti ti-folder text-base"></i>
-                Projects
-            </a>
-            <a href="{{ Auth::user()->division ? route('notifications.index') : route('manager.reviews') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-500 hover:bg-white/40 font-medium text-sm transition">
-                <i class="ti ti-bell text-base"></i>
-                {{ Auth::user()->division ? 'Notification' : 'Reviews' }}
-            </a>
-        </nav>
-    </aside>
+    @include('partials.sidebar')
 
     <!-- MAIN WORKSPACE -->
     <main class="flex-1 bg-[#FAF8F5] min-h-screen flex flex-col relative overflow-hidden z-10 w-full">

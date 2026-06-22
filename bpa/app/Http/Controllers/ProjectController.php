@@ -78,15 +78,26 @@ class ProjectController extends Controller
             'name' => 'required',
             'start_project' => 'required|date',
             'end_project' => 'required|date',
+            'division_id' => 'sometimes|exists:divisions,id',
         ]);
 
         $project = Project::findOrFail($id);
 
-        $project->update([
+        $updateData = [
             'name' => $request->name,
             'start_project' => $request->start_project,
             'end_project' => $request->end_project,
-        ]);
+        ];
+
+        if ($request->has('division_id')) {
+            $updateData['division_id'] = $request->division_id;
+        }
+
+        $project->update($updateData);
+
+        if (Auth::user()->division && Auth::user()->division->name === 'Manager') {
+            return redirect()->route('manager.projects.index')->with('success', 'Project "' . $project->name . '" has been successfully updated!');
+        }
 
         return redirect()->route('projects')->with('success', 'Project "' . $project->name . '" has been successfully updated!');
     }
@@ -105,6 +116,10 @@ class ProjectController extends Controller
         }
 
         $project->delete();
+
+        if (Auth::user()->division && Auth::user()->division->name === 'Manager') {
+            return redirect()->route('manager.projects.index')->with('success', 'Project has been deleted successfully!');
+        }
 
         return redirect()->back()->with('success', 'Project has been deleted successfully!');
     }

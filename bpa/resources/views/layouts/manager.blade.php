@@ -161,36 +161,7 @@
     <div class="flex min-h-screen">
 
         <!-- ======= SIDEBAR ======= -->
-        <aside class="w-52 flex-shrink-0 bg-sidebar flex flex-col py-6 px-4 gap-5" style="background:#E8E4E0;">
-          <div class="">
-            <div class="brand text-3xl text-red px-1 pt-6">
-                <img src="{{ asset('images/logo-planneru.png') }}" alt="Planner U">
-            </div>
-          </div>
-            <nav class="flex flex-col gap-1 px-3">
-                <a href="{{ route('manager.dashboard') }}"
-                    class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('manager.dashboard') ? 'nav-active' : 'text-brand-muted' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <rect x="3" y="3" width="7" height="7" rx="1" />
-                        <rect x="14" y="3" width="7" height="7" rx="1" />
-                        <rect x="3" y="14" width="7" height="7" rx="1" />
-                        <rect x="14" y="14" width="7" height="7" rx="1" />
-                    </svg>
-                    Dashboard
-                </a>
-                <a href="{{ route('manager.projects.index') }}"
-                    class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text- {{ request()->routeIs('manager.projects.index') ? 'nav-active' : 'text-brand-muted' }}">
-                    <i class="ti ti-folder text-base"></i>
-                    Projects
-                </a>
-                <a href="{{ route('manager.reviews') }}"
-                    class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('manager.reviews') || request()->routeIs('manager.review_detail') ? 'nav-active' : 'text-brand-muted' }}">
-                    <i class="ti ti-folder-check text-base"></i>
-                    Reviews
-                </a>
-            </nav>
-        </aside>
+        @include('partials.sidebar')
 
         <!-- ======= MAIN ======= -->
         <main class="flex-1 flex flex-col min-h-screen">
