@@ -15,6 +15,18 @@
     <div class="subtitle">Project Management Planner Telkom University</div>
 
     <div class="card">
+        @if(session('error'))
+            <div class="alert alert-error">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
@@ -41,10 +53,6 @@
 
             <button type="submit" class="btn">Sign In</button>
         </form>
-    </div>
-
-    <div class="bottom-text">
-        Don't have an account? <a href="{{ route('register') }}">Sign up</a>
     </div>
 </div>
 

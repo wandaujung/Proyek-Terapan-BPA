@@ -1,6 +1,8 @@
 @php
   $user = Auth::user();
-  $isManager = $user->division && $user->division->name === 'Manager';
+  $isManager = ($user->division && strtolower($user->division->name) === 'manager') 
+               || request()->is('dashboard/manager*') 
+               || request()->routeIs('manager.*');
   $divisionName = $user->division ? strtolower($user->division->name) : 'ac';
 @endphp
 
@@ -48,6 +50,13 @@
          style="{{ request()->routeIs('manager.reviews') || request()->routeIs('manager.review_detail') ? 'background-color: #FFFFFF; color: #CC1D1D; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05);' : '' }}">
         <i class="ti ti-folder-check text-base"></i>
         Reviews
+      </a>
+
+      <a href="{{ route('manager.staff_management') }}"
+         class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition {{ request()->routeIs('manager.staff_management') ? 'bg-white text-[#CC1D1D] font-bold shadow-sm' : 'text-[#6B6560] hover:bg-[#DDD9D5]' }}"
+         style="{{ request()->routeIs('manager.staff_management') ? 'background-color: #FFFFFF; color: #CC1D1D; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05);' : '' }}">
+        <i class="ti ti-users text-base"></i>
+        Staff Management
       </a>
     @else
       <!-- STAFF NAV -->

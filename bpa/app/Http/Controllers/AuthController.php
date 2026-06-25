@@ -19,41 +19,24 @@ class AuthController extends Controller
     }
 
 
-    public function registerForm()
-    {
-        return view('auth.register');
-    }
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'division_id' => null, // division is assigned by admin later
-        ]);
-
-        return redirect('/login')->with('success', 'Registrasi berhasil. Akun Anda sedang menunggu verifikasi divisi dari admin sebelum bisa login.');
-    }
-
     // =====================
     // LOGIN
     // =====================
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
             $user = Auth::user();
 
             if (!$user->division) {
                 Auth::logout();
-                return back()->with('error', 'Akun Anda belum ditugaskan ke divisi apa pun. Silakan hubungi admin.');
+                return back()->with('error', 'Akun Anda belum ditugaskan ke divisi apa pun. Silakan hubungi Manager.');
             }
 
             $division = $user->division->name;

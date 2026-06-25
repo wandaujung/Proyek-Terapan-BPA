@@ -169,3 +169,22 @@ body {
     font-weight: 700;
     margin-left: 4px;
 }
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    text-align: left;
+    line-height: 1.5;
+}
+.alert-error {
+    background-color: #fde8e8;
+    color: #9b1c1c;
+    border: 1px solid #fbd5d5;
+}
+.alert-success {
+    background-color: #def7ec;
+    color: #03543f;
+    border: 1px solid #bcf0da;
+}

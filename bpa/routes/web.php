@@ -11,9 +11,6 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -61,6 +58,31 @@ Route::get('/dashboard/manager/reviews/{task}', [ManagerController::class, 'revi
 Route::post('/dashboard/manager/projects', [ManagerController::class, 'storeProject'])
     ->middleware('auth')
     ->name('manager.projects.store');
+
+Route::get('/dashboard/manager/staff', [ManagerController::class, 'staffManagement'])
+    ->middleware('auth')
+    ->name('manager.staff_management');
+
+Route::post('/dashboard/manager/staff', [ManagerController::class, 'storeStaff'])
+    ->middleware('auth')
+    ->name('manager.staff_management.store');
+
+Route::get('/dashboard/manager/staff/export', [ManagerController::class, 'exportStaff'])
+    ->middleware('auth')
+    ->name('manager.staff_management.export');
+
+Route::delete('/dashboard/manager/staff/{user}', [ManagerController::class, 'deleteStaff'])
+    ->middleware('auth')
+    ->name('manager.staff_management.delete');
+
+Route::post('/dashboard/manager/staff/import', [ManagerController::class, 'importStaff'])
+    ->middleware('auth')
+    ->name('manager.staff_management.import');
+
+Route::get('/dashboard/manager/staff/template', [ManagerController::class, 'downloadTemplate'])
+    ->middleware('auth')
+    ->name('manager.staff_management.template');
+
 
     
 Route::get('/projects', [ProjectController::class, 'index'])
