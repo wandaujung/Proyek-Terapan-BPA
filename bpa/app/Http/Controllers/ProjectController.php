@@ -95,6 +95,13 @@ class ProjectController extends Controller
 
         $project->update($updateData);
 
+        // Sync members
+        if ($request->has('members')) {
+            $project->members()->sync($request->members);
+        } else {
+            $project->members()->detach();
+        }
+
         if (Auth::user()->division && Auth::user()->division->name === 'Manager') {
             return redirect()->route('manager.projects.index')->with('success', 'Project "' . $project->name . '" has been successfully updated!');
         }
@@ -135,7 +142,7 @@ class ProjectController extends Controller
 }
 public function tasks($id)
 {
-    $project = Project::with(['tasks.subTasks', 'members'])->findOrFail($id);
+    $project = Project::with(['tasks.subTasks', 'members', 'division'])->findOrFail($id);
 
     $todoTasks     = $project->tasks->where('status', 'todo');
     $progressTasks = $project->tasks->where('status', 'progress');
@@ -147,6 +154,11 @@ public function tasks($id)
     $collaborators = $project->members;
     $availableUsers = $divisionUsers->merge($collaborators)->unique('id');
 
-    return view('task', compact('project', 'todoTasks', 'progressTasks', 'reviewTasks', 'doneTasks', 'availableUsers'));
+    // Get all managers for submit review autocomplete
+    $managers = User::whereHas('division', function($query) {
+        $query->where('name', 'Manager');
+    })->get();
+
+    return view('task', compact('project', 'todoTasks', 'progressTasks', 'reviewTasks', 'doneTasks', 'availableUsers', 'managers'));
 }
 }

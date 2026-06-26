@@ -198,17 +198,13 @@
                                     <p
                                         class="text-[10px] font-bold {{ $task->urgency_label === 'Overdue' ? 'text-red' : 'text-gray-400' }} uppercase tracking-wide">
                                         {{ $task->urgency_label }}</p>
-                                    <p class="text-xs font-semibold text-red mt-0.5 cursor-pointer hover:underline">
-                                        {{ $task->urgency_label === 'Overdue' ? 'Complete Now' : 'Complete Soon' }}</p>
+                                    <a href="{{ $task->project_id ? route('projects.tasks', $task->project_id) : route('projects') }}" class="text-xs font-semibold text-red mt-0.5 hover:underline">
+                                        {{ $task->urgency_label === 'Overdue' ? 'Complete Now' : 'Complete Soon' }}</a>
                                 </div>
                             </div>
                         @empty
                             <div class="py-4 text-center text-xs text-gray-400">No urgent tasks — great job! </div>
                         @endforelse
-                    </div>
-                    <div class="text-right mt-3">
-                        <a href="{{ route('projects') }}" class="text-xs font-semibold text-red hover:underline">Lihat
-                            Semua</a>
                     </div>
                 </div>
 

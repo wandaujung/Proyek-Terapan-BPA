@@ -5,13 +5,13 @@
       <div class="px-8 py-8">
 
         <!-- Page Heading -->
-        <h1 class="font-condensed font-extrabold text-3xl tracking-wide text-brand-text mb-1">REVIEWS</h1>
-        <p class="text-xs font-semibold tracking-widest text-brand-muted uppercase mb-8">
+        <h1 class="brand text-4xl tracking-widest text-brand-text mb-1">REVIEWS</h1>
+        <p class="text-[10px] font-semibold tracking-[.18em] text-brand-muted mt-0.5 uppercase mb-8">
           Review staff submissions, evaluate project progress, and provide feedback to support successful project completion.
         </p>
 
         <!-- Section title -->
-        <h2 class="font-condensed font-bold text-base tracking-widest text-brand-text uppercase mb-4">Project Review Queue</h2>
+        <h2 class="brand text-2xl tracking-wider text-brand-text uppercase mb-4">Project Review Queue</h2>
 
         <!-- Pending badge -->
         <div class="mb-5">
@@ -25,7 +25,7 @@
           <div class="bg-white rounded-2xl border border-brand-border p-6 review-card">
             <div class="flex items-start justify-between gap-6">
               <div class="flex-1">
-                <h3 class="font-condensed font-extrabold text-xl text-brand-text mb-1">{{ $task->title }}</h3>
+                <h3 class="brand text-2xl tracking-wider text-brand-text mb-1">{{ $task->title }}</h3>
                 <p class="text-xs text-brand-muted mb-4">{{ $task->user->name ?? 'Staff' }} &nbsp;·&nbsp; {{ $task->updated_at->diffForHumans() }}</p>
                 <div class="bg-brand-bg rounded-lg border-l-4 px-4 py-3" style="border-color:#CC1D1D;">
                   <p class="text-[10px] font-bold tracking-widest uppercase mb-1" style="color:#CC1D1D;">Project</p>

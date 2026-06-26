@@ -68,8 +68,8 @@
         <!-- Page Heading & Actions -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 class="font-condensed font-extrabold text-3xl tracking-wide text-brand-text mb-1">STAFF DIRECTORY</h1>
-            <p class="text-xs font-semibold tracking-widest text-brand-muted uppercase">
+            <h1 class="brand text-4xl tracking-widest text-brand-text mb-1">STAFF DIRECTORY</h1>
+            <p class="text-[10px] font-semibold tracking-[.18em] text-brand-muted mt-0.5 uppercase">
               Manage and organize Telkom University project staff members, roles, and divisions.
             </p>
           </div>
@@ -96,7 +96,7 @@
         </div>
 
         <!-- Section title -->
-        <h2 class="font-condensed font-bold text-base tracking-widest text-brand-text uppercase mb-4">Active Staff ({{ $staff->count() }})</h2>
+        <h2 class="brand text-2xl tracking-wider text-brand-text uppercase mb-4">Active Staff ({{ $staff->count() }})</h2>
 
         @if($staff->isEmpty())
           <!-- Empty State -->
@@ -104,7 +104,7 @@
             <div class="w-16 h-16 rounded-full bg-brand-sidebar flex items-center justify-center mb-4 text-brand-muted">
               <i class="ti ti-users text-2xl"></i>
             </div>
-            <h3 class="font-condensed font-extrabold text-lg text-brand-text mb-1 uppercase tracking-wide">No Staff Members</h3>
+            <h3 class="brand text-xl text-brand-text mb-1 uppercase tracking-wide">No Staff Members</h3>
             <p class="text-xs text-brand-muted max-w-xs">You haven't registered any staff members yet. Click the "Add New Staff" button to register one.</p>
           </div>
         @else
@@ -135,7 +135,7 @@
                           {{ strtoupper(substr($user->name, 0, 2)) }}
                         </div>
                         <div>
-                          <h3 class="font-condensed font-extrabold text-sm text-brand-text uppercase leading-tight">{{ $user->name }}</h3>
+                          <h3 class="brand text-sm text-brand-text uppercase leading-tight">{{ $user->name }}</h3>
                           <p class="text-xs text-brand-muted mt-0.5">{{ $user->email }}</p>
                         </div>
                       </div>
@@ -180,7 +180,7 @@
       <div id="addStaffModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="if(event.target===this)closeAddStaffModal()">
         <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div class="px-8 pt-8 pb-4">
-            <h2 class="font-condensed font-extrabold text-2xl tracking-wide text-brand-text">ADD NEW STAFF</h2>
+            <h2 class="brand text-2xl tracking-widest text-brand-text">ADD NEW STAFF</h2>
             <p class="text-xs mt-1 text-brand-muted">Register a new staff member and assign them to a division.</p>
           </div>
 
@@ -232,7 +232,7 @@
       <div id="importStaffModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="if(event.target===this)closeImportStaffModal()">
         <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div class="px-8 pt-8 pb-4">
-            <h2 class="font-condensed font-extrabold text-2xl tracking-wide text-brand-text">IMPORT STAFF FROM CSV</h2>
+            <h2 class="brand text-2xl tracking-widest text-brand-text">IMPORT STAFF FROM CSV</h2>
             <p class="text-xs mt-1 text-brand-muted">Upload a CSV file containing staff accounts to register them in bulk.</p>
           </div>
 

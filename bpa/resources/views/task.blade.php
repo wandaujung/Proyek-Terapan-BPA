@@ -236,7 +236,7 @@
       </p>
 
       <!-- Button -->
-      <button onclick="window.location.href='{{ route('projects') }}'" class="w-full py-4 rounded-full text-white font-semibold text-sm tracking-wide bg-[#c0272d] hover:bg-[#a82025] transition-colors shadow-md shadow-[#c0272d]/25">
+      <button onclick="window.location.href='{{ Auth::user()->division && strtolower(Auth::user()->division->name) === 'manager' ? route('manager.projects.index') : route('projects') }}'" class="w-full py-4 rounded-full text-white font-semibold text-sm tracking-wide bg-[#c0272d] hover:bg-[#a82025] transition-colors shadow-md shadow-[#c0272d]/25">
         Back to Projects
       </button>
 
@@ -289,7 +289,7 @@
       <h1 class="brand text-4xl tracking-widest">TASK</h1>
 
       <p class="text-[10px] font-semibold tracking-[.18em] text-gray-400 mt-0.5 uppercase">
-        Manage and monitor all task in the Curriculum Division Workspace.
+        Manage and monitor all task in the {{ $project->division->name }} Division Workspace.
       </p>
     </div>
 
@@ -477,7 +477,7 @@
         <!-- Task Title -->
         <div>
           <label class="modal-label">Task Title</label>
-          <input id="detailTaskTitle" name="title" type="text" placeholder="What needs to be done?" class="modal-input" />
+          <input id="detailTaskTitle" name="title" type="text" required placeholder="What needs to be done?" class="modal-input" />
         </div>
 
         <!-- Description -->
@@ -578,8 +578,6 @@
       <div class="px-8 py-5 border-t border-gray-200 flex items-center justify-end gap-3">
         <button type="button" onclick="closeDetailModal()"
           class="text-sm text-gray-500 hover:text-gray-700 font-semibold px-5 py-2.5 rounded-xl transition-colors">Cancel</button>
-        <button type="button" id="detailSubmitBtn" onclick="submitTaskFromDetail()"
-          class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm hidden">Submit for Review</button>
         <button type="submit"
           class="text-sm bg-[#b91c1c] hover:bg-[#991b1b] text-white font-semibold px-6 py-2.5 rounded-xl transition-colors shadow-sm">Save</button>
       </div>
@@ -610,17 +608,15 @@
         </div>
 
         <!-- Manager Email -->
-        <div>
+        <div class="relative">
           <label class="modal-label">Manager / Reviewer</label>
           <div class="flex items-center gap-3">
             <div class="flex-1 flex items-center gap-2 bg-[#FAF9F7] border border-gray-100 rounded-xl px-4 py-3 focus-within:border-[#b91c1c] transition-colors">
               <span class="text-gray-400 font-semibold text-sm">@</span>
-              <input type="email" name="manager_email" required placeholder="Email..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none" />
+              <input type="email" id="managerEmailInput" name="manager_email" required autocomplete="off" placeholder="Type manager email..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none" />
             </div>
-            <button type="button" class="bg-[#b91c1c] hover:bg-[#991b1b] text-white text-sm font-semibold px-5 py-3 rounded-xl flex items-center gap-1.5 transition-colors shadow-sm shrink-0">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-              Add
-            </button>
+          </div>
+          <div id="managerSearchResults" class="absolute left-0 right-0 bg-white border border-gray-200 rounded-xl mt-1 max-h-40 overflow-y-auto hidden z-50 shadow-lg">
           </div>
         </div>
 
@@ -670,7 +666,7 @@
         <!-- Task Title -->
         <div>
           <label class="modal-label">Task Title</label>
-          <input type="text"  name="title" placeholder="What needs to be done?" class="modal-input" />
+          <input type="text" name="title" required placeholder="What needs to be done?" class="modal-input" />
         </div>
 
         <!-- Description -->
@@ -767,6 +763,61 @@
   </div>
 
   <script>
+    const managers = @json($managers ?? []);
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const managerEmailInput = document.getElementById('managerEmailInput');
+      const managerSearchResults = document.getElementById('managerSearchResults');
+
+      if (managerEmailInput && managerSearchResults) {
+        managerEmailInput.addEventListener('input', function () {
+          const keyword = this.value.toLowerCase().trim();
+          managerSearchResults.innerHTML = '';
+
+          if (keyword.length < 1) {
+            managerSearchResults.classList.add('hidden');
+            return;
+          }
+
+          const filtered = managers.filter(manager =>
+            manager.email.toLowerCase().includes(keyword) || 
+            manager.name.toLowerCase().includes(keyword)
+          );
+
+          if (filtered.length === 0) {
+            managerSearchResults.classList.add('hidden');
+            return;
+          }
+
+          filtered.forEach(manager => {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'w-full text-left px-4 py-2.5 hover:bg-[#C0282D]/5 border-b border-gray-100 text-sm block';
+            item.innerHTML = `
+              <div class="font-semibold text-gray-800 text-xs">${manager.name}</div>
+              <div class="text-[11px] text-gray-400">${manager.email}</div>
+            `;
+            item.onclick = function () {
+              managerEmailInput.value = manager.email;
+              managerSearchResults.innerHTML = '';
+              managerSearchResults.classList.add('hidden');
+            };
+            managerSearchResults.appendChild(item);
+          });
+
+          managerSearchResults.classList.remove('hidden');
+        });
+
+        // Close search results dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+          if (e.target !== managerEmailInput && e.target !== managerSearchResults) {
+            managerSearchResults.innerHTML = '';
+            managerSearchResults.classList.add('hidden');
+          }
+        });
+      }
+    });
+
     function openModal() {
       document.getElementById('taskModal').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -909,13 +960,7 @@
       toggleDetailSubTaskForm();
     }
     
-    function submitTaskFromDetail() {
-      if (!currentDetailTask) return;
-      const taskId = currentDetailTask.id;
-      const taskTitle = currentDetailTask.title;
-      closeDetailModal();
-      openSubmitModal('{{ $project->id }}', '{{ $project->name }}', taskId, taskTitle);
-    }
+
 
     // Submit Modal
     function openSubmitModal(projectId, projectName, taskId = null, taskTitle = null) {

@@ -5,8 +5,8 @@
       <div id="page-dashboard" class="px-8 py-8">
 
         <!-- Page Heading -->
-        <h1 class="font-condensed font-extrabold text-3xl tracking-wide text-brand-text mb-1">MANAGER OVERVIEW</h1>
-        <p class="text-xs font-semibold tracking-widest text-brand-muted uppercase mb-6">
+        <h1 class="brand text-4xl tracking-widest text-brand-text mb-1">MANAGER OVERVIEW</h1>
+        <p class="text-[10px] font-semibold tracking-[.18em] text-brand-muted mt-0.5 uppercase mb-6">
           Monitor project progress, track ongoing activities, and review project performance from your manager dashboard.
         </p>
 
@@ -22,7 +22,7 @@
         @foreach($divisions as $division)
         <section class="mb-10">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="font-condensed font-bold text-xl tracking-widest text-brand-text uppercase">{{ $division->name }}</h2>
+            <h2 class="brand text-2xl tracking-wider text-brand-text uppercase">{{ $division->name }}</h2>
             <span class="text-xs text-brand-muted font-semibold">{{ $division->projects->count() }} Projects</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -31,7 +31,7 @@
             <div class="project-card bg-white rounded-2xl p-5 flex flex-col gap-4 border border-brand-border" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'">
               <div>
                 <span class="inline-block bg-brand-red text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">Project</span>
-                <h3 class="font-condensed font-extrabold text-lg text-brand-text uppercase leading-tight">{{ $project->name }}</h3>
+                <h3 class="brand text-2xl tracking-wider text-brand-text uppercase leading-tight">{{ $project->name }}</h3>
                 <p class="text-xs text-brand-muted mt-0.5">{{ $project->tasks->count() }} Tasks</p>
               </div>
               <div class="flex-1"></div>
@@ -85,7 +85,7 @@
             <div class="bg-white rounded-2xl border border-brand-border p-6 relative review-card">
               <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
-                  <h3 class="font-condensed font-extrabold text-xl text-brand-text mb-1">{{ $task->title }}</h3>
+                  <h3 class="brand text-2xl tracking-wider text-brand-text mb-1">{{ $task->title }}</h3>
                   <p class="text-xs text-brand-muted mb-4">{{ $task->user->name ?? 'Staff' }} &nbsp;·&nbsp; {{ $task->updated_at->diffForHumans() }}</p>
                   <div class="bg-brand-bg rounded-lg border-l-4 px-4 py-3" style="border-color:#CC1D1D;">
                     <p class="text-[10px] font-bold tracking-widest uppercase text-brand-red mb-1">Project</p>

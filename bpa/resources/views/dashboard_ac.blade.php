@@ -231,11 +231,12 @@
                   >
                     {{ $task->urgency_label }}
                   </p>
-                  <p
-                    class="text-xs font-semibold text-red mt-0.5 cursor-pointer hover:underline"
+                  <a
+                    href="{{ $task->project_id ? route('projects.tasks', $task->project_id) : route('projects') }}"
+                    class="text-xs font-semibold text-red mt-0.5 hover:underline"
                   >
                     {{ $task->urgency_label === 'Overdue' ? 'Complete Now' : 'Complete Soon' }}
-                  </p>
+                  </a>
                 </div>
               </div>
               @empty
@@ -243,13 +244,6 @@
                 No urgent tasks — great job! 
               </div>
               @endforelse
-            </div>
-
-            <!-- See All -->
-            <div class="text-right mt-3">
-              <a href="{{ route('projects') }}" class="text-xs font-semibold text-red hover:underline"
-                >Lihat Semua</a
-              >
             </div>
           </div>
 

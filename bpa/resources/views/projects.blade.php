@@ -174,12 +174,12 @@
 
       <!-- EDIT BUTTON -->
       <button
-        onclick="event.stopPropagation(); openEditModal(
-          '{{ $project->id }}',
-          '{{ $project->name }}',
-          '{{ $project->start_project }}',
-          '{{ $project->end_project }}'
-        )"
+        data-id="{{ $project->id }}"
+        data-name="{{ $project->name }}"
+        data-start="{{ $project->start_project }}"
+        data-end="{{ $project->end_project }}"
+        data-members="{{ json_encode($project->members->map(function($m) { return ['id' => $m->id, 'name' => $m->name, 'email' => $m->email]; })) }}"
+        onclick="event.stopPropagation(); openEditModal(this)"
         class="w-9 h-9 rounded-full bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition"
         title="Edit Project"
       >
@@ -468,6 +468,43 @@
 
       </div>
 
+      <!-- COLLABORATIVE TEAM (EDIT) -->
+      <div class="bg-[#F0EDE8] rounded-2xl p-4 mb-6 relative">
+        <p class="text-sm font-bold text-red mb-0.5">Collaborative Team</p>
+        <p class="text-xs text-gray-400 mb-3">Add members by email.</p>
+
+        <!-- EMAIL INPUT ROW -->
+        <div class="flex gap-2 mb-2">
+          <div class="flex-1 flex items-center gap-2 bg-white border border-black/10 rounded-xl px-3 py-2.5">
+            <i class="ti ti-at text-gray-300 text-base"></i>
+            <input
+              type="text"
+              id="editMemberSearch"
+              placeholder="Search email..."
+              class="flex-1 text-sm bg-transparent focus:outline-none text-gray-700 placeholder-gray-300"
+            />
+          </div>
+          <button
+            type="button"
+            class="bg-red hover:bg-red-dark transition text-white rounded-xl px-4 text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap"
+            onclick="event.stopPropagation();"
+          >
+            <i class="ti ti-user-plus text-sm"></i>
+            Add
+          </button>
+        </div>
+
+        <div class="relative">
+          <div id="editSearchResults" class="absolute left-0 right-0 bg-white border border-black/10 rounded-xl mt-1 max-h-40 overflow-y-auto hidden z-50 shadow-lg"></div>
+        </div>
+
+        <!-- MEMBER LIST -->
+        <div id="editMemberList" class="flex flex-col gap-2 mt-3"></div>
+
+        <!-- hidden inputs container -->
+        <div id="editMemberInputs" class="hidden"></div>
+      </div>
+
       <!-- BUTTON -->
       <div class="flex items-center justify-end gap-3">
 
@@ -637,19 +674,122 @@ function addMember(user)
   const closeEditModalBtn2 =
     document.getElementById('closeEditModal2');
 
-  function openEditModal(id, name, start, end) {
+  // =========================
+  // EDIT MEMBER SELECTION
+  // =========================
+  function addEditMember(user) {
+    const editMemberInputs = document.getElementById('editMemberInputs');
+    const editMemberList = document.getElementById('editMemberList');
+
+    // prevent duplicate
+    if (editMemberInputs.querySelector(`[value="${user.id}"]`)) return;
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3 bg-white border border-black/10 rounded-xl px-3 py-2.5';
+    row.innerHTML = `
+      <div class="w-7 h-7 rounded-full bg-red flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+        ${user.name.charAt(0).toUpperCase()}
+      </div>
+      <div class="flex-grow min-w-0">
+        <p class="text-sm font-semibold text-gray-800 truncate">${user.name}</p>
+        <p class="text-xs text-gray-400 truncate">${user.email}</p>
+      </div>
+      <button type="button" class="remove-edit-member text-gray-400 hover:text-red transition">
+        <i class="ti ti-x text-sm"></i>
+      </button>
+    `;
+
+    editMemberList.appendChild(row);
+
+    const hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'members[]';
+    hidden.value = user.id;
+    editMemberInputs.appendChild(hidden);
+
+    row.querySelector('.remove-edit-member').addEventListener('click', () => {
+      row.remove();
+      hidden.remove();
+    });
+  }
+
+  function openEditModal(btn) {
+    const id = btn.getAttribute('data-id');
+    const name = btn.getAttribute('data-name');
+    const start = btn.getAttribute('data-start');
+    const end = btn.getAttribute('data-end');
+    const members = JSON.parse(btn.getAttribute('data-members') || '[]');
 
     editModal.classList.remove('hidden');
 
     document.getElementById('edit_name').value = name;
-
     document.getElementById('edit_start').value = start;
-
     document.getElementById('edit_end').value = end;
+    document.getElementById('editForm').action = `/projects/update/${id}`;
 
-    document.getElementById('editForm').action =
-      `/projects/update/${id}`;
+    // Reset edit members list
+    const editMemberList = document.getElementById('editMemberList');
+    const editMemberInputs = document.getElementById('editMemberInputs');
+    editMemberList.innerHTML = '';
+    editMemberInputs.innerHTML = '';
+
+    // Load existing members
+    members.forEach(member => addEditMember(member));
   }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const editMemberSearch = document.getElementById('editMemberSearch');
+    const editSearchResults = document.getElementById('editSearchResults');
+
+    if (editMemberSearch && editSearchResults) {
+      editMemberSearch.addEventListener('input', function () {
+        const keyword = this.value.toLowerCase().trim();
+        editSearchResults.innerHTML = '';
+
+        if (keyword.length < 1) {
+          editSearchResults.classList.add('hidden');
+          return;
+        }
+
+        const filtered = users.filter(user =>
+          user.email.toLowerCase().includes(keyword) ||
+          user.name.toLowerCase().includes(keyword)
+        );
+
+        if (filtered.length === 0) {
+          editSearchResults.classList.add('hidden');
+          return;
+        }
+
+        filtered.forEach(user => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'w-full text-left px-4 py-3 hover:bg-red/5 border-b border-black/5 text-sm block';
+          item.innerHTML = `
+            <div class="font-semibold text-gray-800 text-sm">${user.name}</div>
+            <div class="text-xs text-gray-400">${user.email}</div>
+          `;
+          item.onclick = function () {
+            addEditMember(user);
+            editMemberSearch.value = '';
+            editSearchResults.innerHTML = '';
+            editSearchResults.classList.add('hidden');
+          };
+          editSearchResults.appendChild(item);
+        });
+
+        editSearchResults.classList.remove('hidden');
+      });
+
+      // Close search results when clicking outside
+      document.addEventListener('click', function (e) {
+        if (e.target !== editMemberSearch && e.target !== editSearchResults) {
+          editSearchResults.innerHTML = '';
+          editSearchResults.classList.add('hidden');
+        }
+      });
+    }
+  });
 
   function closeEditModal() {
     editModal.classList.add('hidden');

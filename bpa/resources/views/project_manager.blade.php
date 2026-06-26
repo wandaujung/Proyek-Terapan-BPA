@@ -52,8 +52,8 @@
     <div class="px-8 py-8">
 
       <!-- Page title -->
-      <h1 class="font-condensed font-extrabold text-3xl tracking-wide text-brand-text mb-1">PROJECTS</h1>
-      <p class="text-xs font-semibold tracking-widest text-brand-muted uppercase mb-8">
+      <h1 class="brand text-4xl tracking-widest text-brand-text mb-1">PROJECTS</h1>
+      <p class="text-[10px] font-semibold tracking-[.18em] text-brand-muted mt-0.5 uppercase mb-8">
         Manage and monitor projects across Curriculum, MKLT, MKWK, and Academic Partnership divisions in one workspace.
       </p>
 
@@ -62,7 +62,7 @@
         <!-- DIVISION SECTION -->
         <section>
           <div class="flex items-center justify-between mb-4">
-            <h2 class="font-condensed font-bold text-xl tracking-widest text-brand-text uppercase">{{ $division->name }}</h2>
+            <h2 class="brand text-2xl tracking-wider text-brand-text uppercase">{{ $division->name }}</h2>
             <span class="text-xs text-brand-muted font-semibold">{{ $division->projects->count() }} Projects</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -82,20 +82,20 @@
               <div class="flex justify-between items-start">
                 <div>
                   <span class="inline-block bg-brand-red text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">Project</span>
-                  <h3 class="font-condensed font-extrabold text-lg text-brand-text uppercase leading-tight">{{ $project->name }}</h3>
+                  <h3 class="brand text-2xl tracking-wider text-brand-text uppercase leading-tight">{{ $project->name }}</h3>
                   <p class="text-xs text-brand-muted mt-0.5">{{ $project->tasks->count() }} Tasks</p>
                 </div>
                 <!-- Action Controls -->
                 <div class="flex items-center gap-1.5">
                   <!-- Edit Project -->
                   <button
-                    onclick="event.stopPropagation(); openEditProjectModal(
-                      '{{ $project->id }}',
-                      '{{ addslashes($project->name) }}',
-                      '{{ $project->start_project }}',
-                      '{{ $project->end_project }}',
-                      '{{ $project->division_id }}'
-                    )"
+                    data-id="{{ $project->id }}"
+                    data-name="{{ $project->name }}"
+                    data-start="{{ $project->start_project }}"
+                    data-end="{{ $project->end_project }}"
+                    data-division-id="{{ $project->division_id }}"
+                    data-members="{{ json_encode($project->members->map(function($m) { return ['id' => $m->id, 'name' => $m->name, 'email' => $m->email]; })) }}"
+                    onclick="event.stopPropagation(); openEditProjectModal(this)"
                     class="w-8 h-8 rounded-full bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition"
                     title="Edit Project"
                   >
@@ -170,9 +170,9 @@
 
 <!-- ======= NEW PROJECT MODAL ======= -->
 <div id="newProjectModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="if(event.target===this)closeNewProjectModal()">
-  <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
     <div class="px-8 pt-8 pb-4">
-      <h2 class="font-condensed font-extrabold text-2xl tracking-wide text-brand-text">NEW PROJECT</h2>
+      <h2 class="brand text-2xl tracking-widest text-brand-text">NEW PROJECT</h2>
       <p class="text-xs mt-1 text-brand-muted">Create a new project and assign it to a division.</p>
     </div>
 
@@ -208,6 +208,35 @@
           </div>
         </div>
 
+        <!-- MEMBER SELECTION -->
+        <div class="mb-4">
+          <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">
+            Collaborators (Optional)
+          </label>
+          <p class="text-[10px] text-brand-muted mb-2">Add members by email.</p>
+          <div class="flex items-center gap-3">
+            <div class="flex-grow flex items-center gap-2 bg-[#F5F3F0] border border-brand-border rounded-xl px-4 py-3 focus-within:border-brand-red transition-colors">
+              <span class="text-gray-400 font-semibold text-sm">@</span>
+              <input
+                type="text"
+                id="newMemberSearch"
+                placeholder="Search staff email..."
+                class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm font-semibold text-brand-text placeholder-gray-300 outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="relative">
+            <div id="newSearchResults" class="absolute left-0 right-0 bg-white border border-brand-border rounded-xl mt-1 max-h-40 overflow-y-auto hidden z-50 shadow-lg"></div>
+          </div>
+
+          <!-- MEMBER LIST -->
+          <div id="newMemberList" class="flex flex-col gap-2 mt-3 max-h-40 overflow-y-auto"></div>
+
+          <!-- hidden inputs container -->
+          <div id="newMemberInputs" class="hidden"></div>
+        </div>
+
         <!-- Buttons -->
         <div class="flex items-center gap-4 pt-2">
           <button type="submit" class="flex-1 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm bg-brand-red">
@@ -223,9 +252,9 @@
 
 <!-- ======= EDIT PROJECT MODAL ======= -->
 <div id="editProjectModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="if(event.target===this)closeEditProjectModal()">
-  <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
     <div class="px-8 pt-8 pb-4">
-      <h2 class="font-condensed font-extrabold text-2xl tracking-wide text-brand-text">EDIT PROJECT</h2>
+      <h2 class="brand text-2xl tracking-widest text-brand-text">EDIT PROJECT</h2>
       <p class="text-xs mt-1 text-brand-muted">Modify project details and division assignment.</p>
     </div>
 
@@ -262,6 +291,35 @@
           </div>
         </div>
 
+        <!-- MEMBER SELECTION -->
+        <div class="mb-4">
+          <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">
+            Collaborators (Optional)
+          </label>
+          <p class="text-[10px] text-brand-muted mb-2">Add members by email.</p>
+          <div class="flex items-center gap-3">
+            <div class="flex-grow flex items-center gap-2 bg-[#F5F3F0] border border-brand-border rounded-xl px-4 py-3 focus-within:border-brand-red transition-colors">
+              <span class="text-gray-400 font-semibold text-sm">@</span>
+              <input
+                type="text"
+                id="editMemberSearch"
+                placeholder="Search staff email..."
+                class="w-full bg-transparent border-none p-0 focus:ring-0 text-sm font-semibold text-brand-text placeholder-gray-300 outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="relative">
+            <div id="editSearchResults" class="absolute left-0 right-0 bg-white border border-brand-border rounded-xl mt-1 max-h-40 overflow-y-auto hidden z-50 shadow-lg"></div>
+          </div>
+
+          <!-- MEMBER LIST -->
+          <div id="editMemberList" class="flex flex-col gap-2 mt-3 max-h-40 overflow-y-auto"></div>
+
+          <!-- hidden inputs container -->
+          <div id="editMemberInputs" class="hidden"></div>
+        </div>
+
         <!-- Buttons -->
         <div class="flex items-center gap-4 pt-2">
           <button type="submit" class="flex-1 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm bg-brand-red hover:bg-brand-redDark">
@@ -279,20 +337,219 @@
     if (divisionId) {
       document.getElementById('modalDivisionSelect').value = divisionId;
     }
+    // Reset fields in the creation form
+    document.getElementById('newMemberList').innerHTML = '';
+    document.getElementById('newMemberInputs').innerHTML = '';
+    document.getElementById('newMemberSearch').value = '';
     document.getElementById('newProjectModal').classList.add('open');
   }
   function closeNewProjectModal() {
     document.getElementById('newProjectModal').classList.remove('open');
   }
 
-  function openEditProjectModal(id, name, start, end, divisionId) {
+  const users = @json($users ?? []);
+
+  function addNewMember(user) {
+    const memberInputs = document.getElementById('newMemberInputs');
+    const memberList = document.getElementById('newMemberList');
+
+    // prevent duplicate
+    if (memberInputs.querySelector(`[value="${user.id}"]`)) return;
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3 bg-[#F5F3F0] border border-brand-border rounded-xl px-3 py-2 mt-1';
+    row.innerHTML = `
+      <div class="w-6 h-6 rounded-full bg-brand-red flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+        ${user.name.charAt(0).toUpperCase()}
+      </div>
+      <div class="flex-grow min-w-0">
+        <p class="text-xs font-semibold text-brand-text truncate">${user.name}</p>
+        <p class="text-[10px] text-brand-muted truncate">${user.email}</p>
+      </div>
+      <button type="button" class="remove-member text-brand-muted hover:text-brand-red transition">
+        <i class="ti ti-x text-xs"></i>
+      </button>
+    `;
+
+    memberList.appendChild(row);
+
+    const hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'members[]';
+    hidden.value = user.id;
+    memberInputs.appendChild(hidden);
+
+    row.querySelector('.remove-member').addEventListener('click', () => {
+      row.remove();
+      hidden.remove();
+    });
+  }
+
+  function addEditMember(user) {
+    const memberInputs = document.getElementById('editMemberInputs');
+    const memberList = document.getElementById('editMemberList');
+
+    // prevent duplicate
+    if (memberInputs.querySelector(`[value="${user.id}"]`)) return;
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3 bg-[#F5F3F0] border border-brand-border rounded-xl px-3 py-2 mt-1';
+    row.innerHTML = `
+      <div class="w-6 h-6 rounded-full bg-brand-red flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+        ${user.name.charAt(0).toUpperCase()}
+      </div>
+      <div class="flex-grow min-w-0">
+        <p class="text-xs font-semibold text-brand-text truncate">${user.name}</p>
+        <p class="text-[10px] text-brand-muted truncate">${user.email}</p>
+      </div>
+      <button type="button" class="remove-member text-brand-muted hover:text-brand-red transition">
+        <i class="ti ti-x text-xs"></i>
+      </button>
+    `;
+
+    memberList.appendChild(row);
+
+    const hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'members[]';
+    hidden.value = user.id;
+    memberInputs.appendChild(hidden);
+
+    row.querySelector('.remove-member').addEventListener('click', () => {
+      row.remove();
+      hidden.remove();
+    });
+  }
+
+  function openEditProjectModal(btn) {
+    const id = btn.getAttribute('data-id');
+    const name = btn.getAttribute('data-name');
+    const start = btn.getAttribute('data-start');
+    const end = btn.getAttribute('data-end');
+    const divisionId = btn.getAttribute('data-division-id');
+    const members = JSON.parse(btn.getAttribute('data-members') || '[]');
+
     document.getElementById('editProjectForm').action = `/projects/update/${id}`;
     document.getElementById('edit_project_name').value = name;
     document.getElementById('edit_project_start').value = start;
     document.getElementById('edit_project_end').value = end;
     document.getElementById('edit_project_division').value = divisionId;
+
+    // Reset members list
+    const memberList = document.getElementById('editMemberList');
+    const memberInputs = document.getElementById('editMemberInputs');
+    memberList.innerHTML = '';
+    memberInputs.innerHTML = '';
+
+    // Load existing members
+    members.forEach(member => addEditMember(member));
+
     document.getElementById('editProjectModal').classList.add('open');
   }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Edit Modal Autocomplete
+    const editMemberSearch = document.getElementById('editMemberSearch');
+    const editSearchResults = document.getElementById('editSearchResults');
+
+    if (editMemberSearch && editSearchResults) {
+      editMemberSearch.addEventListener('input', function () {
+        const keyword = this.value.toLowerCase().trim();
+        editSearchResults.innerHTML = '';
+
+        if (keyword.length < 1) {
+          editSearchResults.classList.add('hidden');
+          return;
+        }
+
+        const filtered = users.filter(user =>
+          user.email.toLowerCase().includes(keyword) ||
+          user.name.toLowerCase().includes(keyword)
+        );
+
+        if (filtered.length === 0) {
+          editSearchResults.classList.add('hidden');
+          return;
+        }
+
+        filtered.forEach(user => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'w-full text-left px-4 py-2.5 hover:bg-[#CC1D1D]/5 border-b border-brand-border text-xs block';
+          item.innerHTML = `
+            <div class="font-semibold text-brand-text text-xs">${user.name}</div>
+            <div class="text-[10px] text-brand-muted">${user.email}</div>
+          `;
+          item.onclick = function () {
+            addEditMember(user);
+            editMemberSearch.value = '';
+            editSearchResults.innerHTML = '';
+            editSearchResults.classList.add('hidden');
+          };
+          editSearchResults.appendChild(item);
+        });
+
+        editSearchResults.classList.remove('hidden');
+      });
+    }
+
+    // New Modal Autocomplete
+    const newMemberSearch = document.getElementById('newMemberSearch');
+    const newSearchResults = document.getElementById('newSearchResults');
+
+    if (newMemberSearch && newSearchResults) {
+      newMemberSearch.addEventListener('input', function () {
+        const keyword = this.value.toLowerCase().trim();
+        newSearchResults.innerHTML = '';
+
+        if (keyword.length < 1) {
+          newSearchResults.classList.add('hidden');
+          return;
+        }
+
+        const filtered = users.filter(user =>
+          user.email.toLowerCase().includes(keyword) ||
+          user.name.toLowerCase().includes(keyword)
+        );
+
+        if (filtered.length === 0) {
+          newSearchResults.classList.add('hidden');
+          return;
+        }
+
+        filtered.forEach(user => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'w-full text-left px-4 py-2.5 hover:bg-[#CC1D1D]/5 border-b border-brand-border text-xs block';
+          item.innerHTML = `
+            <div class="font-semibold text-brand-text text-xs">${user.name}</div>
+            <div class="text-[10px] text-brand-muted">${user.email}</div>
+          `;
+          item.onclick = function () {
+            addNewMember(user);
+            newMemberSearch.value = '';
+            newSearchResults.innerHTML = '';
+            newSearchResults.classList.add('hidden');
+          };
+          newSearchResults.appendChild(item);
+        });
+
+        newSearchResults.classList.remove('hidden');
+      });
+    }
+
+    // Close search dropdowns when clicking outside
+    document.addEventListener('click', function (e) {
+      if (editMemberSearch && editSearchResults && e.target !== editMemberSearch && e.target !== editSearchResults) {
+        editSearchResults.innerHTML = '';
+        editSearchResults.classList.add('hidden');
+      }
+      if (newMemberSearch && newSearchResults && e.target !== newMemberSearch && e.target !== newSearchResults) {
+        newSearchResults.innerHTML = '';
+        newSearchResults.classList.add('hidden');
+      }
+    });
+  });
   function closeEditProjectModal() {
     document.getElementById('editProjectModal').classList.remove('open');
   }

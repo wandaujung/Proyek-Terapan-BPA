@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
@@ -38,10 +38,6 @@
         .brand {
             font-family: 'Bebas Neue', sans-serif;
             letter-spacing: 0.06em;
-        }
-
-        .logo-text {
-            font-family: 'Barlow Condensed', sans-serif;
         }
     </style>
 </head>

@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Planner U – Manager Overview</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
     <script>
@@ -16,8 +14,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['DM Sans', 'sans-serif'],
-                        condensed: ['Barlow Condensed', 'sans-serif'],
+                        sans: ['"DM Sans"', 'sans-serif'],
+                        condensed: ['"Bebas Neue"', 'sans-serif'],
                     },
                     colors: {
                         brand: {
@@ -40,6 +38,11 @@
         body {
             background-color: #F0EDEA;
             font-family: 'DM Sans', sans-serif;
+        }
+
+        .brand {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.06em;
         }
 
         .nav-active {

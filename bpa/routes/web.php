@@ -39,49 +39,43 @@ Route::get('/profile', function () {
     return view('profile');
 })->middleware('auth')->name('profile');
 
-Route::get('/dashboard/manager', [ManagerController::class, 'dashboard'])
-    ->middleware('auth')
-    ->name('manager.dashboard');
+Route::middleware([
+    'auth',
+    'manager'
+])->group(function () {
+    Route::get('/dashboard/manager', [ManagerController::class, 'dashboard'])
+        ->name('manager.dashboard');
 
-Route::get('/dashboard/manager/projects', [ManagerController::class, 'projects'])
-    ->middleware('auth')
-    ->name('manager.projects.index');
+    Route::get('/dashboard/manager/projects', [ManagerController::class, 'projects'])
+        ->name('manager.projects.index');
 
-Route::get('/dashboard/manager/reviews', [ManagerController::class, 'reviews'])
-    ->middleware('auth')
-    ->name('manager.reviews');
+    Route::get('/dashboard/manager/reviews', [ManagerController::class, 'reviews'])
+        ->name('manager.reviews');
 
-Route::get('/dashboard/manager/reviews/{task}', [ManagerController::class, 'reviewDetail'])
-    ->middleware('auth')
-    ->name('manager.review_detail');
+    Route::get('/dashboard/manager/reviews/{task}', [ManagerController::class, 'reviewDetail'])
+        ->name('manager.review_detail');
 
-Route::post('/dashboard/manager/projects', [ManagerController::class, 'storeProject'])
-    ->middleware('auth')
-    ->name('manager.projects.store');
+    Route::post('/dashboard/manager/projects', [ManagerController::class, 'storeProject'])
+        ->name('manager.projects.store');
 
-Route::get('/dashboard/manager/staff', [ManagerController::class, 'staffManagement'])
-    ->middleware('auth')
-    ->name('manager.staff_management');
+    Route::get('/dashboard/manager/staff', [ManagerController::class, 'staffManagement'])
+        ->name('manager.staff_management');
 
-Route::post('/dashboard/manager/staff', [ManagerController::class, 'storeStaff'])
-    ->middleware('auth')
-    ->name('manager.staff_management.store');
+    Route::post('/dashboard/manager/staff', [ManagerController::class, 'storeStaff'])
+        ->name('manager.staff_management.store');
 
-Route::get('/dashboard/manager/staff/export', [ManagerController::class, 'exportStaff'])
-    ->middleware('auth')
-    ->name('manager.staff_management.export');
+    Route::get('/dashboard/manager/staff/export', [ManagerController::class, 'exportStaff'])
+        ->name('manager.staff_management.export');
 
-Route::delete('/dashboard/manager/staff/{user}', [ManagerController::class, 'deleteStaff'])
-    ->middleware('auth')
-    ->name('manager.staff_management.delete');
+    Route::delete('/dashboard/manager/staff/{user}', [ManagerController::class, 'deleteStaff'])
+        ->name('manager.staff_management.delete');
 
-Route::post('/dashboard/manager/staff/import', [ManagerController::class, 'importStaff'])
-    ->middleware('auth')
-    ->name('manager.staff_management.import');
+    Route::post('/dashboard/manager/staff/import', [ManagerController::class, 'importStaff'])
+        ->name('manager.staff_management.import');
 
-Route::get('/dashboard/manager/staff/template', [ManagerController::class, 'downloadTemplate'])
-    ->middleware('auth')
-    ->name('manager.staff_management.template');
+    Route::get('/dashboard/manager/staff/template', [ManagerController::class, 'downloadTemplate'])
+        ->name('manager.staff_management.template');
+});
 
 
     

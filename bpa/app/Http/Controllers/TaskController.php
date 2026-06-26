@@ -23,7 +23,8 @@ class TaskController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'project_id' => 'required|exists:projects,id'
+            'project_id' => 'required|exists:projects,id',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
         $task = Task::create([
@@ -32,7 +33,7 @@ class TaskController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'brief_link' => $request->brief_link,
-            'user_id' => Auth::id(),
+            'user_id' => $request->user_id ?: Auth::id(),
             'project_id' => $request->project_id,
             'status' => 'todo'
         ]);
@@ -45,7 +46,7 @@ class TaskController extends Controller
                 $isCompleted = is_array($subtaskData) ? ($subtaskData['is_completed'] ?? 0) : 0;
                 
                 if (!empty(trim($title))) {
-                    SubTask::create([
+                     SubTask::create([
                         'task_id' => $task->id,
                         'title' => trim($title),
                         'is_completed' => $isCompleted,
@@ -62,6 +63,7 @@ class TaskController extends Controller
     {
         $request->validate([
             'title' => 'required',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
         $task->update([
@@ -71,6 +73,7 @@ class TaskController extends Controller
             'end_date' => $request->end_date,
             'brief_link' => $request->brief_link,
             'submission_link' => $request->submission_link,
+            'user_id' => $request->user_id ?: null,
         ]);
 
         // Sync sub-tasks: delete old ones and recreate

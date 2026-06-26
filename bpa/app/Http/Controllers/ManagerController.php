@@ -76,7 +76,8 @@ class ManagerController extends Controller
     public function projects()
     {
         $divisions = \App\Models\Division::with(['projects.tasks', 'projects.members'])->get();
-        return view('project_manager', compact('divisions'));
+        $users = User::all();
+        return view('project_manager', compact('divisions', 'users'));
     }
 
     public function storeProject(Request $request)
@@ -86,14 +87,30 @@ class ManagerController extends Controller
             'division_id' => 'required|exists:divisions,id',
             'start_project' => 'required|date',
             'end_project' => 'required|date|after_or_equal:start_project',
+            'members' => 'nullable|array',
+            'members.*' => 'exists:users,id',
         ]);
 
-        Project::create([
+        $project = Project::create([
             'name' => $request->name,
             'division_id' => $request->division_id,
             'start_project' => $request->start_project,
             'end_project' => $request->end_project,
         ]);
+
+        if ($request->has('members')) {
+            $project->members()->attach($request->members);
+        }
+
+        // Notify division staff and collaborators
+        $project->load('members');
+        $divisionUsers = User::where('division_id', $project->division_id)->get();
+        $members = $project->members;
+        $usersToNotify = $divisionUsers->merge($members);
+
+        foreach ($usersToNotify as $userToNotify) {
+            $userToNotify->notify(new \App\Notifications\ProjectNotification($project, 'added'));
+        }
 
         return redirect()->route('manager.projects.index')->with('success', 'Project created successfully!');
     }
