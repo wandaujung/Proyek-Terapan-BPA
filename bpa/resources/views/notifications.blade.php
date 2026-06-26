@@ -166,8 +166,8 @@
 
             <div class="flex-1 min-w-0">
               <div class="flex items-start justify-between gap-4">
-                <span class="notif-label {{ $notification->data['action'] == 'approved' ? 'text-[#1a7a45]' : ($notification->data['action'] == 'removed' ? 'text-red' : ($notification->data['action'] == 'revision' ? 'text-red' : 'text-[#0066ff]')) }}">
-                  @if($notification->data['action'] == 'approved') Manager Approval @elseif($notification->data['action'] == 'revision') Revision Request @elseif($notification->data['action'] == 'removed') Project Removed @else New Project Added @endif
+                <span class="notif-label {{ $notification->data['action'] == 'approved' ? 'text-[#1a7a45]' : ($notification->data['action'] == 'removed' ? 'text-red' : ($notification->data['action'] == 'revision' ? 'text-red' : ($notification->data['action'] == 'updated' ? 'text-[#0066ff]' : 'text-[#0066ff]'))) }}">
+                  @if($notification->data['action'] == 'approved') Manager Approval @elseif($notification->data['action'] == 'revision') Revision Request @elseif($notification->data['action'] == 'removed') Project Removed @elseif($notification->data['action'] == 'updated') Project Updated @else New Project Added @endif
                 </span>
                 <span class="notif-time">{{ $notification->created_at->diffForHumans() }}</span>
               </div>
@@ -178,6 +178,8 @@
                   Manager requested revisions for "<strong>{{ $notification->data['title'] }}</strong>". Please check the revision notes.
                 @elseif($notification->data['action'] == 'removed')
                   Project "<strong>{{ $notification->data['title'] }}</strong>" has been removed from the workspace.
+                @elseif($notification->data['action'] == 'updated')
+                  Project "<strong>{{ $notification->data['title'] }}</strong>" has been updated in your workspace.
                 @else
                   Project "<strong>{{ $notification->data['title'] }}</strong>" has been added to your workspace.
                 @endif
@@ -194,7 +196,7 @@
                     <i class="ti ti-file-description"></i>
                     See Notes
                   </button>
-                @elseif(($notification->data['action'] == 'added' || $notification->data['action'] == 'project_added' || !in_array($notification->data['action'], ['approved', 'revision', 'removed'])) && $projectId)
+                @elseif(($notification->data['action'] == 'added' || $notification->data['action'] == 'updated' || $notification->data['action'] == 'project_added' || !in_array($notification->data['action'], ['approved', 'revision', 'removed'])) && $projectId)
                   <a href="{{ route('projects.tasks', $projectId) }}" class="action-btn btn-green" style="background:#d6e4ff; color:#0066ff;">
                     <i class="ti ti-folder"></i>
                     View Project

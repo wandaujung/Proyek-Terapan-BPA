@@ -74,7 +74,7 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between mb-1">
                     <p class="text-sm font-bold text-[#1A1A1A] truncate">
-                      @if($notif->data['action'] == 'approved') Manager Approval @elseif($notif->data['action'] == 'revision') Revision Request @elseif($notif->data['action'] == 'removed') Project Removed @else New Project Added @endif
+                      @if($notif->data['action'] == 'approved') Manager Approval @elseif($notif->data['action'] == 'revision') Revision Request @elseif($notif->data['action'] == 'removed') Project Removed @elseif($notif->data['action'] == 'updated') Project Updated @else New Project Added @endif
                     </p>
                     <span class="text-[11px] font-medium text-gray-400 whitespace-nowrap">{{ $notif->created_at->diffForHumans(null, true, true) }} ago</span>
                   </div>
@@ -85,6 +85,8 @@
                       '{{ $notif->data['title'] }}' needs attention.
                     @elseif($notif->data['action'] == 'removed')
                       '{{ $notif->data['title'] }}' removed from workspace.
+                    @elseif($notif->data['action'] == 'updated')
+                      '{{ $notif->data['title'] }}' updated in workspace.
                     @else
                       '{{ $notif->data['title'] }}' added to workspace.
                     @endif

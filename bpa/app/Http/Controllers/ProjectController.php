@@ -53,10 +53,13 @@ class ProjectController extends Controller
     // Refresh members relationship to include newly attached members
     $project->load('members');
 
-    // Notify division staff and collaborators
+    // Notify division staff, collaborators, and managers
     $divisionUsers = User::where('division_id', $project->division_id)->get();
     $members = $project->members;
-    $usersToNotify = $divisionUsers->merge($members);
+    $managers = User::whereHas('division', function($q) {
+        $q->where('name', 'Manager');
+    })->get();
+    $usersToNotify = $divisionUsers->merge($members)->merge($managers)->unique('id');
 
     foreach ($usersToNotify as $userToNotify) {
         $userToNotify->notify(new \App\Notifications\ProjectNotification($project, 'added'));
@@ -102,6 +105,19 @@ class ProjectController extends Controller
             $project->members()->detach();
         }
 
+        // Notify division staff, collaborators, and managers about project update
+        $project->load('members');
+        $divisionUsers = User::where('division_id', $project->division_id)->get();
+        $members = $project->members;
+        $managers = User::whereHas('division', function($q) {
+            $q->where('name', 'Manager');
+        })->get();
+        $usersToNotify = $divisionUsers->merge($members)->merge($managers)->unique('id');
+
+        foreach ($usersToNotify as $userToNotify) {
+            $userToNotify->notify(new \App\Notifications\ProjectNotification($project, 'updated'));
+        }
+
         if (Auth::user()->division && Auth::user()->division->name === 'Manager') {
             return redirect()->route('manager.projects.index')->with('success', 'Project "' . $project->name . '" has been successfully updated!');
         }
@@ -113,10 +129,13 @@ class ProjectController extends Controller
     {
         $project = Project::with('members')->findOrFail($id);
 
-        // Notify division staff and collaborators before deletion
+        // Notify division staff, collaborators, and managers before deletion
         $divisionUsers = User::where('division_id', $project->division_id)->get();
         $members = $project->members;
-        $usersToNotify = $divisionUsers->merge($members);
+        $managers = User::whereHas('division', function($q) {
+            $q->where('name', 'Manager');
+        })->get();
+        $usersToNotify = $divisionUsers->merge($members)->merge($managers)->unique('id');
 
         foreach ($usersToNotify as $userToNotify) {
             $userToNotify->notify(new \App\Notifications\ProjectNotification($project, 'removed'));

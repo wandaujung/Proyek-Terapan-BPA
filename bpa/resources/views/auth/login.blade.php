@@ -48,7 +48,6 @@
                 <label>
                     <input type="checkbox" name="remember"> Remember me
                 </label>
-                <a href="#">Forgot password?</a>
             </div>
 
             <button type="submit" class="btn">Sign In</button>

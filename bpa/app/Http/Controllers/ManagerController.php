@@ -102,11 +102,14 @@ class ManagerController extends Controller
             $project->members()->attach($request->members);
         }
 
-        // Notify division staff and collaborators
+        // Notify division staff, collaborators, and managers
         $project->load('members');
         $divisionUsers = User::where('division_id', $project->division_id)->get();
         $members = $project->members;
-        $usersToNotify = $divisionUsers->merge($members);
+        $managers = User::whereHas('division', function($q) {
+            $q->where('name', 'Manager');
+        })->get();
+        $usersToNotify = $divisionUsers->merge($members)->merge($managers)->unique('id');
 
         foreach ($usersToNotify as $userToNotify) {
             $userToNotify->notify(new \App\Notifications\ProjectNotification($project, 'added'));

@@ -58,6 +58,13 @@
         <i class="ti ti-users text-base"></i>
         Staff Management
       </a>
+
+      <a href="{{ route('notifications.index') }}"
+         class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition {{ request()->routeIs('notifications.index') ? 'bg-white text-[#CC1D1D] font-bold shadow-sm' : 'text-[#6B6560] hover:bg-[#DDD9D5]' }}"
+         style="{{ request()->routeIs('notifications.index') ? 'background-color: #FFFFFF; color: #CC1D1D; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05);' : '' }}">
+        <i class="ti ti-bell text-base"></i>
+        Notification
+      </a>
     @else
       <!-- STAFF NAV -->
       <a href="/dashboard/{{ $divisionName }}"
