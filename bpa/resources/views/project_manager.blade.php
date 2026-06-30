@@ -5,29 +5,24 @@
     <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 z-50" onclick="closeSuccessModal()">
       <div class="bg-[#FAF8F5] rounded-[32px] shadow-2xl w-full max-w-sm px-8 py-10 flex flex-col items-center text-center transform transition-all duration-300" onclick="event.stopPropagation()">
 
-        <!-- Icon -->
         <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #b2d8cc;">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="#3a8c72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
 
-        <!-- Title -->
         <h2 class="font-condensed text-2xl font-bold text-gray-900 leading-snug mb-4 uppercase tracking-wide">
           Action Successful
         </h2>
 
-        <!-- Description -->
         <p class="text-gray-500 text-sm leading-relaxed mb-8">
           {{ session('success') }}
         </p>
 
-        <!-- Button -->
         <button onclick="closeSuccessModal()" class="w-full py-4 rounded-full text-white font-semibold text-sm tracking-wide bg-[#c0272d] hover:bg-[#a82025] transition-colors shadow-md shadow-[#c0272d]/25">
           Close
         </button>
 
-        <!-- Encrypted Label -->
         <div class="flex items-center gap-2 mt-8 text-gray-400 text-xs font-medium tracking-widest uppercase">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -51,7 +46,6 @@
 
     <div class="px-8 py-8">
 
-      <!-- Page title -->
       <h1 class="brand text-4xl tracking-widest text-brand-text mb-1">PROJECTS</h1>
       <p class="text-[10px] font-semibold tracking-[.18em] text-brand-muted mt-0.5 uppercase mb-8">
         Manage and monitor projects across Curriculum, MKLT, MKWK, and Academic Partnership divisions in one workspace.
@@ -59,7 +53,7 @@
 
       <div class="flex flex-col gap-10">
         @foreach($divisions as $division)
-        <!-- DIVISION SECTION -->
+
         <section>
           <div class="flex items-center justify-between mb-4">
             <h2 class="brand text-2xl tracking-wider text-brand-text uppercase">{{ $division->name }}</h2>
@@ -67,7 +61,6 @@
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             
-            <!-- Add card -->
             <div class="add-card bg-white rounded-2xl flex flex-col items-center justify-center gap-2 border-2 border-dashed border-brand-border hover:border-brand-red transition-colors cursor-pointer" style="min-height:200px;" onclick="openNewProjectModal({{ $division->id }})">
               <div class="add-btn w-11 h-11 bg-brand-sidebar rounded-full flex items-center justify-center text-xl text-brand-muted transition-colors">+</div>
               <div class="text-center">
@@ -77,7 +70,7 @@
             </div>
             
             @forelse($division->projects as $project)
-            <!-- Project Card -->
+
             <div class="project-card bg-white rounded-2xl p-5 flex flex-col gap-4 border border-brand-border cursor-pointer" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'">
               <div class="flex justify-between items-start">
                 <div>
@@ -85,9 +78,9 @@
                   <h3 class="brand text-2xl tracking-wider text-brand-text uppercase leading-tight">{{ $project->name }}</h3>
                   <p class="text-xs text-brand-muted mt-0.5">{{ $project->tasks->count() }} Tasks</p>
                 </div>
-                <!-- Action Controls -->
+
                 <div class="flex items-center gap-1.5">
-                  <!-- Edit Project -->
+
                   <button
                     data-id="{{ $project->id }}"
                     data-name="{{ $project->name }}"
@@ -102,7 +95,7 @@
                     <i class="ti ti-edit text-blue-500 text-sm"></i>
                   </button>
 
-                  <!-- Delete Project -->
+
                   <form
                     onclick="event.stopPropagation()"
                     action="{{ route('projects.destroy', $project->id) }}"
@@ -157,7 +150,7 @@
               </div>
             </div>
             @empty
-            <!-- No Projects -->
+           
             @endforelse
           </div>
         </section>
@@ -168,7 +161,7 @@
 
 @section('scripts')
 
-<!-- ======= NEW PROJECT MODAL ======= -->
+
 <div id="newProjectModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="if(event.target===this)closeNewProjectModal()">
   <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
     <div class="px-8 pt-8 pb-4">
@@ -179,13 +172,13 @@
     <form action="{{ route('manager.projects.store') }}" method="POST" class="px-8 pb-8">
       @csrf
       <div class="flex flex-col gap-5">
-        <!-- Project Name -->
+
         <div>
           <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">Project Name</label>
           <input type="text" name="name" required placeholder="e.g. PKKMB 2026" class="w-full bg-[#F5F3F0] border border-brand-border rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition" />
         </div>
 
-        <!-- Division -->
+
         <div>
           <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">Division</label>
           <select name="division_id" id="modalDivisionSelect" required class="w-full bg-[#F5F3F0] border border-brand-border rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition">
@@ -196,7 +189,7 @@
           </select>
         </div>
 
-        <!-- Dates -->
+
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">Start Date</label>
@@ -208,7 +201,7 @@
           </div>
         </div>
 
-        <!-- MEMBER SELECTION -->
+
         <div class="mb-4">
           <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">
             Collaborators (Optional)
@@ -230,14 +223,12 @@
             <div id="newSearchResults" class="absolute left-0 right-0 bg-white border border-brand-border rounded-xl mt-1 max-h-40 overflow-y-auto hidden z-50 shadow-lg"></div>
           </div>
 
-          <!-- MEMBER LIST -->
           <div id="newMemberList" class="flex flex-col gap-2 mt-3 max-h-40 overflow-y-auto"></div>
 
-          <!-- hidden inputs container -->
+
           <div id="newMemberInputs" class="hidden"></div>
         </div>
 
-        <!-- Buttons -->
         <div class="flex items-center gap-4 pt-2">
           <button type="submit" class="flex-1 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm bg-brand-red">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
@@ -250,7 +241,7 @@
   </div>
 </div>
 
-<!-- ======= EDIT PROJECT MODAL ======= -->
+
 <div id="editProjectModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="if(event.target===this)closeEditProjectModal()">
   <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
     <div class="px-8 pt-8 pb-4">
@@ -262,13 +253,13 @@
       @csrf
       @method('PUT')
       <div class="flex flex-col gap-5">
-        <!-- Project Name -->
+      
         <div>
           <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">Project Name</label>
           <input type="text" name="name" id="edit_project_name" required placeholder="e.g. PKKMB 2026" class="w-full bg-[#F5F3F0] border border-brand-border rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition" />
         </div>
 
-        <!-- Division -->
+ 
         <div>
           <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">Division</label>
           <select name="division_id" id="edit_project_division" required class="w-full bg-[#F5F3F0] border border-brand-border rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition">
@@ -279,7 +270,6 @@
           </select>
         </div>
 
-        <!-- Dates -->
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">Start Date</label>
@@ -291,7 +281,7 @@
           </div>
         </div>
 
-        <!-- MEMBER SELECTION -->
+
         <div class="mb-4">
           <label class="text-[10px] font-bold uppercase tracking-widest mb-1.5 block text-brand-muted">
             Collaborators (Optional)
@@ -313,14 +303,14 @@
             <div id="editSearchResults" class="absolute left-0 right-0 bg-white border border-brand-border rounded-xl mt-1 max-h-40 overflow-y-auto hidden z-50 shadow-lg"></div>
           </div>
 
-          <!-- MEMBER LIST -->
+ 
           <div id="editMemberList" class="flex flex-col gap-2 mt-3 max-h-40 overflow-y-auto"></div>
 
-          <!-- hidden inputs container -->
+
           <div id="editMemberInputs" class="hidden"></div>
         </div>
 
-        <!-- Buttons -->
+
         <div class="flex items-center gap-4 pt-2">
           <button type="submit" class="flex-1 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm bg-brand-red hover:bg-brand-redDark">
             Save Changes
@@ -337,7 +327,7 @@
     if (divisionId) {
       document.getElementById('modalDivisionSelect').value = divisionId;
     }
-    // Reset fields in the creation form
+    
     document.getElementById('newMemberList').innerHTML = '';
     document.getElementById('newMemberInputs').innerHTML = '';
     document.getElementById('newMemberSearch').value = '';
@@ -353,7 +343,7 @@
     const memberInputs = document.getElementById('newMemberInputs');
     const memberList = document.getElementById('newMemberList');
 
-    // prevent duplicate
+
     if (memberInputs.querySelector(`[value="${user.id}"]`)) return;
 
     const row = document.createElement('div');
@@ -389,7 +379,7 @@
     const memberInputs = document.getElementById('editMemberInputs');
     const memberList = document.getElementById('editMemberList');
 
-    // prevent duplicate
+
     if (memberInputs.querySelector(`[value="${user.id}"]`)) return;
 
     const row = document.createElement('div');
@@ -435,20 +425,20 @@
     document.getElementById('edit_project_end').value = end;
     document.getElementById('edit_project_division').value = divisionId;
 
-    // Reset members list
+  
     const memberList = document.getElementById('editMemberList');
     const memberInputs = document.getElementById('editMemberInputs');
     memberList.innerHTML = '';
     memberInputs.innerHTML = '';
 
-    // Load existing members
+  
     members.forEach(member => addEditMember(member));
 
     document.getElementById('editProjectModal').classList.add('open');
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    // Edit Modal Autocomplete
+  
     const editMemberSearch = document.getElementById('editMemberSearch');
     const editSearchResults = document.getElementById('editSearchResults');
 
@@ -493,7 +483,7 @@
       });
     }
 
-    // New Modal Autocomplete
+    
     const newMemberSearch = document.getElementById('newMemberSearch');
     const newSearchResults = document.getElementById('newSearchResults');
 
@@ -538,7 +528,7 @@
       });
     }
 
-    // Close search dropdowns when clicking outside
+
     document.addEventListener('click', function (e) {
       if (editMemberSearch && editSearchResults && e.target !== editMemberSearch && e.target !== editSearchResults) {
         editSearchResults.innerHTML = '';

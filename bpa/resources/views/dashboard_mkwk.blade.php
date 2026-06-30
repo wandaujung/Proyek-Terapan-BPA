@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Planner U × BPA – Dashboard</title>
 
-    <!-- Tailwind CSS CDN -->
+
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts -->
+  
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap"
         rel="stylesheet" />
 
-    <!-- Tabler Icons -->
+ 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 
     <script>
@@ -49,7 +49,7 @@
             letter-spacing: 0.06em;
         }
 
-        /* thin scrollbar */
+   
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -63,7 +63,7 @@
             border-radius: 99px;
         }
 
-        /* Search bar styles */
+
         .search-wrapper {
             position: relative;
             display: flex;
@@ -121,19 +121,17 @@
 </head>
 
 <body class="flex h-screen overflow-hidden bg-[#FCF9F4] text-[#1A1A1A]">
-    <!-- SIDEBAR -->
+  
     @include('partials.sidebar')
 
-    <!-- ══════════════════════════════════════════
-       MAIN
-  ══════════════════════════════════════════ -->
+ 
     <main class="flex-1 flex flex-col overflow-hidden">
-        <!-- ── TOPBAR ── -->
+       
         @include('partials.staff_header')
 
-        <!-- ── SCROLLABLE CONTENT ── -->
+      
         <div class="flex-1 overflow-y-auto px-8 pb-10 flex flex-col gap-5">
-            <!-- Page Heading -->
+          
             <div>
                 <h1 class="brand text-4xl tracking-widest">DASHBOARD</h1>
                 <p class="text-[10px] font-semibold tracking-[.2em] text-gray-400 mt-0.5 uppercase">
@@ -141,7 +139,7 @@
                 </p>
             </div>
 
-            <!-- ─── STAT CARDS ─── -->
+        
             <div class="grid grid-cols-3 gap-4">
                 <div class="relative bg-white border border-black/10 rounded-3xl p-6 overflow-hidden shadow-sm">
                     <p class="text-[10px] font-bold tracking-[.16em] uppercase text-red mb-2">Active Projects</p>
@@ -246,7 +244,7 @@
                 </div>
             </div>
         </div>
-        <!-- /scrollable content -->
+       
     </main>
 </body>
 

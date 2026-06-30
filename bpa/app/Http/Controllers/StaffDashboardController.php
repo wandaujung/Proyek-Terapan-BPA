@@ -16,8 +16,6 @@ class StaffDashboardController extends Controller
         $divisionId = $user->division_id;
         $divisionName = strtolower($user->division->name ?? 'ac');
 
-        // === STAT CARDS ===
-
         // Active Projects: projects in this division that have at least one non-done task, or have no tasks yet.
         $projects = Project::where('division_id', $divisionId)
             ->orWhereHas('members', function($q) use ($user) {
@@ -46,7 +44,6 @@ class StaffDashboardController extends Controller
             return $p->tasks->count() > 0 && $p->tasks->every(fn($t) => $t->status === 'done');
         })->count();
 
-        // === URGENT TASKS ===
         // Tasks that are overdue (end_date < today) or due today, and not done
         $today = Carbon::today()->toDateString();
         $urgentTasks = Task::whereHas('project', function($q) use ($divisionId, $user) {
@@ -61,7 +58,6 @@ class StaffDashboardController extends Controller
             ->limit(5)
             ->get();
 
-        // === TEAM PERFORMANCE ===
         // Members in this division, ranked by number of completed tasks
         $teamMembers = User::where('division_id', $divisionId)->get();
         $maxDone = 1; // avoid division by zero
@@ -81,8 +77,7 @@ class StaffDashboardController extends Controller
         if ($teamPerformance->count() > 0 && $teamPerformance->first()->completed_tasks > 0) {
             $maxDone = $teamPerformance->first()->completed_tasks;
         }
-
-        // === RECENT ACTIVITY ===
+        
         // Latest 5 notifications for this user
         $recentActivity = $user->notifications()
             ->orderBy('created_at', 'desc')

@@ -102,7 +102,7 @@ class ManagerController extends Controller
             $project->members()->attach($request->members);
         }
 
-        // Notify division staff, collaborators, and managers
+        // Notify division staff, collaborator, and manager
         $project->load('members');
         $divisionUsers = User::where('division_id', $project->division_id)->get();
         $members = $project->members;

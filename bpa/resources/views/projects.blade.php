@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planner U × BPA – Projects</title>
 
-  <!-- Tailwind CSS CDN -->
+ 
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts -->
+
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- Tabler Icons -->
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 
   <script>
@@ -42,7 +42,7 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #C0282D55; border-radius: 99px; }
 
-    /* Hide default date picker icon on webkit */
+    
     input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; right: 0; width: 100%; cursor: pointer; }
     .date-wrapper { position: relative; }
     .date-wrapper .cal-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #aaa; font-size: 16px; }
@@ -51,34 +51,33 @@
 
 <body class="flex h-screen overflow-hidden bg-[#FCF9F4] text-[#1A1A1A]">
 
-  <!-- Success Confirmation Modal -->
+
   @if(session('success'))
   <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 z-50" onclick="closeSuccessModal()">
     <div class="bg-[#FAF8F5] rounded-[32px] shadow-2xl w-full max-w-sm px-8 py-10 flex flex-col items-center text-center transform transition-all duration-300" onclick="event.stopPropagation()">
 
-      <!-- Icon -->
+  
       <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background-color: #b2d8cc;">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="#3a8c72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
 
-      <!-- Title -->
+     
       <h2 class="brand text-2xl font-bold text-gray-900 leading-snug mb-4 uppercase tracking-wide">
         Action Successful
       </h2>
 
-      <!-- Description -->
+   
       <p class="text-gray-500 text-sm leading-relaxed mb-8">
         {{ session('success') }}
       </p>
 
-      <!-- Button -->
+   
       <button onclick="closeSuccessModal()" class="w-full py-4 rounded-full text-white font-semibold text-sm tracking-wide bg-[#c0272d] hover:bg-[#a82025] transition-colors shadow-md shadow-[#c0272d]/25">
         Close
       </button>
 
-      <!-- Encrypted Label -->
       <div class="flex items-center gap-2 mt-8 text-gray-400 text-xs font-medium tracking-widest uppercase">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -100,19 +99,19 @@
   </script>
   @endif
 
-  <!-- SIDEBAR -->
+
   @include('partials.sidebar')
 
-  <!-- MAIN -->
+
   <main class="flex-1 flex flex-col overflow-hidden">
 
-    <!-- TOPBAR -->
+
     @include('partials.staff_header')
 
-    <!-- CONTENT -->
+    
     <div class="flex-1 overflow-y-auto px-8 pb-10 flex flex-col gap-5">
 
-      <!-- HEADING -->
+    
       <div>
         <h1 class="brand text-4xl tracking-widest">PROJECTS</h1>
         <p class="text-[10px] font-semibold tracking-[.18em] text-gray-400 mt-0.5 uppercase">
@@ -120,10 +119,10 @@
         </p>
       </div>
 
-      <!-- GRID -->
+
       <div class="grid grid-cols-3 gap-4">
 
-        <!-- CARD ADD -->
+      
         <div
           id="openModalCard"
           class="bg-white border-2 border-dashed border-black/15 rounded-3xl flex flex-col items-center justify-center gap-3 p-8 min-h-[220px] cursor-pointer hover:border-red/40 hover:bg-red/5 transition group"
@@ -141,14 +140,14 @@
           </div>
         </div>
 
-       <!-- PROJECT LOOP -->
+ 
 @foreach($projects as $project)
 
 <div
   onclick="window.location='{{ route('projects.tasks', $project->id) }}'"
   class="bg-white border border-black/10 rounded-3xl p-6 shadow-sm flex flex-col justify-between min-h-[220px] hover:shadow-md transition cursor-pointer"
 >
-  <!-- TOP -->
+
   <div class="flex items-start justify-between">
 
     <div class="flex flex-col gap-2">
@@ -167,12 +166,8 @@
 
     </div>
 
-    <!-- ACTION -->
     <div class="flex items-center gap-2">
 
-
-
-      <!-- EDIT BUTTON -->
       <button
         data-id="{{ $project->id }}"
         data-name="{{ $project->name }}"
@@ -186,7 +181,6 @@
         <i class="ti ti-edit text-blue-500 text-sm"></i>
       </button>
 
-      <!-- DELETE -->
       <form
       onclick="event.stopPropagation()"
         action="{{ route('projects.destroy', $project->id) }}"
@@ -208,10 +202,10 @@
 
   </div>
 
-  <!-- BOTTOM -->
+
   <div class="flex flex-col gap-3 mt-4">
 
-    <!-- PIC -->
+ 
     <div class="flex items-center gap-2.5">
 
       <div class="w-8 h-8 rounded-full bg-[#D3CEC6] flex items-center justify-center text-[10px] font-bold">
@@ -230,7 +224,6 @@
 
     </div>
 
-    <!-- DATE -->
     <div class="flex items-center justify-between">
 
       <div class="flex items-center gap-1.5 text-xs text-gray-500">
@@ -257,14 +250,13 @@
     </div>
   </main>
 
-  <!-- ===================== MODAL ===================== -->
+
   <div
     id="projectModal"
     class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50"
   >
     <div class="bg-[#FAF8F5] rounded-3xl p-7 w-[480px] max-h-[90vh] overflow-y-auto shadow-2xl">
 
-      <!-- MODAL HEADER -->
       <div class="flex items-start justify-between mb-6">
         <div>
           <p class="text-[10px] font-bold tracking-[.15em] text-red uppercase mb-1">New Entry</p>
@@ -278,7 +270,7 @@
       <form action="{{ route('projects.store') }}" method="POST">
         @csrf
 
-        <!-- PROJECT NAME -->
+  
         <div class="mb-4">
           <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
             Project Name
@@ -292,7 +284,7 @@
           >
         </div>
 
-        <!-- START DATE & END DATE -->
+
         <div class="grid grid-cols-2 gap-3 mb-4">
           <div>
             <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
@@ -326,12 +318,12 @@
 
         
 
-        <!-- COLLABORATIVE TEAM -->
+    
         <div class="bg-[#F0EDE8] rounded-2xl p-4 mb-6">
           <p class="text-sm font-bold text-red mb-0.5">Collaborative Team</p>
           <p class="text-xs text-gray-400 mb-3">Add members by email.</p>
 
-          <!-- EMAIL INPUT ROW -->
+        
           <div class="flex gap-2 mb-2">
             <div class="flex-1 flex items-center gap-2 bg-white border border-black/10 rounded-xl px-3 py-2.5">
               <i class="ti ti-at text-gray-300 text-base"></i>
@@ -356,14 +348,14 @@
             </button>
           </div>
 
-          <!-- MEMBER LIST -->
+    
           <div id="memberList" class="flex flex-col gap-2"></div>
 
-          <!-- Hidden inputs submitted with form -->
+         
           <div id="memberInputs"></div>
         </div>
 
-        <!-- ACTIONS -->
+    
         <div class="flex items-center justify-end gap-3">
           <button
             type="button"
@@ -383,8 +375,7 @@
       </form>
     </div>
   </div>
-  <!-- =================== END MODAL =================== -->
-  <!-- ===================== EDIT MODAL ===================== -->
+ 
 <div
   id="editModal"
   class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50"
@@ -414,7 +405,7 @@
       @csrf
       @method('PUT')
 
-      <!-- PROJECT NAME -->
+     
       <div class="mb-4">
 
         <label class="block text-[10px] font-bold tracking-[.15em] text-red uppercase mb-2">
@@ -431,7 +422,7 @@
 
       </div>
 
-      <!-- DATE -->
+    
       <div class="grid grid-cols-2 gap-3 mb-4">
 
         <div>
@@ -468,12 +459,12 @@
 
       </div>
 
-      <!-- COLLABORATIVE TEAM (EDIT) -->
+      
       <div class="bg-[#F0EDE8] rounded-2xl p-4 mb-6 relative">
         <p class="text-sm font-bold text-red mb-0.5">Collaborative Team</p>
         <p class="text-xs text-gray-400 mb-3">Add members by email.</p>
 
-        <!-- EMAIL INPUT ROW -->
+       
         <div class="flex gap-2 mb-2">
           <div class="flex-1 flex items-center gap-2 bg-white border border-black/10 rounded-xl px-3 py-2.5">
             <i class="ti ti-at text-gray-300 text-base"></i>
@@ -498,14 +489,14 @@
           <div id="editSearchResults" class="absolute left-0 right-0 bg-white border border-black/10 rounded-xl mt-1 max-h-40 overflow-y-auto hidden z-50 shadow-lg"></div>
         </div>
 
-        <!-- MEMBER LIST -->
+      
         <div id="editMemberList" class="flex flex-col gap-2 mt-3"></div>
 
-        <!-- hidden inputs container -->
+      
         <div id="editMemberInputs" class="hidden"></div>
       </div>
 
-      <!-- BUTTON -->
+
       <div class="flex items-center justify-end gap-3">
 
         <button
@@ -530,12 +521,10 @@
   </div>
 </div>
 
-  <!-- SCRIPT -->
+
 <script>
 
-  // =========================
-  // ADD MODAL
-  // =========================
+  
   const modal     = document.getElementById('projectModal');
   const openBtn   = document.getElementById('openModal');
   const openCard  = document.getElementById('openModalCard');
@@ -562,9 +551,7 @@
     }
   });
 
-  // =========================
-  // COLLABORATIVE TEAM
-  // =========================
+  
 const users = @json($users);
 
 const memberSearch = document.getElementById('memberSearch');
@@ -612,7 +599,7 @@ memberSearch.addEventListener('input', function () {
 
 function addMember(user)
 {
-  // prevent duplicate
+
   if (
     memberInputs.querySelector(`[value="${user.id}"]`)
   ) return;
@@ -642,7 +629,7 @@ function addMember(user)
 
   memberList.appendChild(row);
 
-  // hidden input
+
   const hidden = document.createElement('input');
 
   hidden.type = 'hidden';
@@ -651,7 +638,7 @@ function addMember(user)
 
   memberInputs.appendChild(hidden);
 
-  // remove
+ 
   row.querySelector('.remove-member')
     .addEventListener('click', () => {
       row.remove();
@@ -663,9 +650,7 @@ function addMember(user)
   searchResults.classList.add('hidden');
 }
 
-  // =========================
-  // EDIT MODAL
-  // =========================
+ 
   const editModal = document.getElementById('editModal');
 
   const closeEditModalBtn =
@@ -674,14 +659,12 @@ function addMember(user)
   const closeEditModalBtn2 =
     document.getElementById('closeEditModal2');
 
-  // =========================
-  // EDIT MEMBER SELECTION
-  // =========================
+  
   function addEditMember(user) {
     const editMemberInputs = document.getElementById('editMemberInputs');
     const editMemberList = document.getElementById('editMemberList');
 
-    // prevent duplicate
+    
     if (editMemberInputs.querySelector(`[value="${user.id}"]`)) return;
 
     const row = document.createElement('div');
@@ -727,13 +710,13 @@ function addMember(user)
     document.getElementById('edit_end').value = end;
     document.getElementById('editForm').action = `/projects/update/${id}`;
 
-    // Reset edit members list
+
     const editMemberList = document.getElementById('editMemberList');
     const editMemberInputs = document.getElementById('editMemberInputs');
     editMemberList.innerHTML = '';
     editMemberInputs.innerHTML = '';
 
-    // Load existing members
+  
     members.forEach(member => addEditMember(member));
   }
 
@@ -781,7 +764,7 @@ function addMember(user)
         editSearchResults.classList.remove('hidden');
       });
 
-      // Close search results when clicking outside
+    
       document.addEventListener('click', function (e) {
         if (e.target !== editMemberSearch && e.target !== editSearchResults) {
           editSearchResults.innerHTML = '';
@@ -805,7 +788,7 @@ function addMember(user)
     closeEditModal
   );
 
-  // Close edit modal when clicking backdrop
+
   editModal.addEventListener('click', (e) => {
     if (e.target === editModal) {
       closeEditModal();
@@ -814,14 +797,13 @@ function addMember(user)
 
 
 
-  // Open create modal if URL parameter is present
   document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('new_project') === 'true') {
       const createModal = document.getElementById('projectModal');
       if (createModal) {
         createModal.classList.remove('hidden');
-        // Optionally, remove the parameter from the URL without reloading
+       
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }

@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planner U × BPA – Notifications</title>
 
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts -->
+ 
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- Tabler Icons -->
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 
   <script>
@@ -112,19 +111,16 @@
 
 <body class="flex h-screen overflow-hidden bg-[#FCF9F4] text-[#1A1A1A]">
 
-  <!-- SIDEBAR -->
+ 
   @include('partials.sidebar')
 
-  <!-- MAIN -->
+
   <main class="flex-1 flex flex-col overflow-hidden">
 
-    <!-- TOPBAR -->
     @include('partials.staff_header')
 
-    <!-- CONTENT -->
     <div class="flex-1 overflow-y-auto px-8 pb-10 flex flex-col gap-5 max-w-4xl">
       
-      <!-- HEADING -->
       <div class="mt-4 mb-2">
         <h1 class="brand text-4xl tracking-widest">NOTIFICATIONS</h1>
         <p class="text-[10px] font-semibold tracking-[.18em] text-gray-400 mt-0.5 uppercase">
@@ -143,22 +139,22 @@
                data-id="{{ $notification->id }}"
                data-read="{{ $notification->read_at ? 'true' : 'false' }}">
             @if($notification->data['action'] == 'approved')
-              <!-- Approved Icon -->
+             
               <div class="notif-icon" style="background:#d1f0e0;">
                 <i class="ti ti-check text-[#1a7a45]"></i>
               </div>
             @elseif($notification->data['action'] == 'revision')
-              <!-- Revision Icon -->
+          
               <div class="notif-icon" style="background:#fde8ea;">
                 <i class="ti ti-alert-triangle text-red"></i>
               </div>
             @elseif($notification->data['action'] == 'removed')
-              <!-- Removed Icon -->
+     
               <div class="notif-icon" style="background:#fde8ea;">
                 <i class="ti ti-trash text-red"></i>
               </div>
             @else
-              <!-- Added Icon -->
+
               <div class="notif-icon" style="background:#e5efff;">
                 <i class="ti ti-circle-plus text-[#0066ff]"></i>
               </div>
@@ -223,7 +219,6 @@
   </main>
 </div>
 
-<!-- NOTES MODAL -->
 <div id="notesModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onclick="if(event.target===this)closeNotesModal()">
   <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
     <div class="px-8 pt-8 pb-4 border-b border-gray-100">

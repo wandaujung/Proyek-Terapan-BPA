@@ -44,5 +44,5 @@
           @endforeach
 
         </div>
-      </div><!-- /Content -->
+      </div>
 @endsection

@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <title>Planner U × BPA – Projects</title>
-    <!-- Tailwind CSS CDN -->
+    
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts -->
+  
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- Tabler Icons -->
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 
-  <!-- SortableJS -->
+ 
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
    <script>
@@ -48,7 +48,7 @@
       font-family: 'Black Han Sans', sans-serif;
     }
 
-    /* Custom scrollbar for kanban area */
+  
     .kanban-scroll::-webkit-scrollbar {
       height: 6px;
     }
@@ -62,7 +62,7 @@
       border-radius: 99px;
     }
 
-    /* Modal */
+
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -123,7 +123,6 @@
       box-shadow: 0 0 0 2px #b91c1c44;
     }
 
-    /* Sub-task checklist toggle */
     .subtask-check {
       width: 1rem;
       height: 1rem;
@@ -176,7 +175,7 @@
       cursor: grabbing !important;
     }
 
-    /* make task cards show grab cursor */
+   
     .task-card {
       cursor: grab;
     }
@@ -204,7 +203,6 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #C0282D55; border-radius: 99px; }
 
-    /* Hide default date picker icon on webkit */
     input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; right: 0; width: 100%; cursor: pointer; }
     .date-wrapper { position: relative; }
     .date-wrapper .cal-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #aaa; font-size: 16px; }
@@ -325,7 +323,7 @@
               </div>
             </div>
             @endforeach
-          </div><!-- end col-todo -->
+          </div>
 
           <!-- Add Task Button -->
           <button onclick="openModal()"
@@ -360,9 +358,9 @@
               </div>
             </div>
             @endforeach
-          </div><!-- end col-progress -->
+          </div>
 
-        </div><!-- end IN PROGRESS column -->
+        </div>
 
         <!-- Column: UNDER REVIEW -->
         <div class="bg-[#f0ece6] rounded-2xl p-4 flex flex-col gap-3 min-w-[280px] w-[280px] shrink-0">
@@ -397,7 +395,7 @@
                 </div>
             </div>
             @endforeach
-          </div><!-- end col-review -->
+          </div>
 
           <!-- Submit Button -->
           <button onclick="openSubmitModal('{{ $project->id }}', '{{ $project->name }}')"
@@ -443,13 +441,13 @@
               </div>
             </div>
             @endforeach
-          </div><!-- end col-done -->
+          </div>
 
         </div>
 
-      </div><!-- end kanban-scroll -->
+      </div>
     </main>
-  </div><!-- end main -->
+  </div>
 
   <div id="detailModal" class="modal-overlay" onclick="handleDetailOverlayClick(event)">
     <form id="detailForm" method="POST" action="" class="modal-box" onclick="event.stopPropagation()">

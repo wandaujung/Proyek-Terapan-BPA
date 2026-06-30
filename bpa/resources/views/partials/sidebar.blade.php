@@ -13,7 +13,7 @@
   </div>
 
   @if(!$isManager)
-    <!-- New Project Button (Staff only) -->
+ 
     <button
       @if(request()->routeIs('projects'))
         id="openModal"
@@ -27,10 +27,10 @@
     </button>
   @endif
 
-  <!-- NAV -->
+
   <nav class="flex flex-col gap-1">
     @if($isManager)
-      <!-- MANAGER NAV -->
+    
       <a href="{{ route('manager.dashboard') }}"
          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition {{ request()->routeIs('manager.dashboard') ? 'bg-white text-[#CC1D1D] font-bold shadow-sm' : 'text-[#6B6560] hover:bg-[#DDD9D5]' }}"
          style="{{ request()->routeIs('manager.dashboard') ? 'background-color: #FFFFFF; color: #CC1D1D; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05);' : '' }}">
@@ -66,7 +66,7 @@
         Notification
       </a>
     @else
-      <!-- STAFF NAV -->
+    
       <a href="/dashboard/{{ $divisionName }}"
          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition {{ request()->is('dashboard/*') ? 'bg-white text-[#C0282D] font-bold shadow-sm' : 'text-[#6B6560] hover:bg-[#DDD9D5]' }}"
          style="{{ request()->is('dashboard/*') ? 'background-color: #FFFFFF; color: #C0282D; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05);' : '' }}">

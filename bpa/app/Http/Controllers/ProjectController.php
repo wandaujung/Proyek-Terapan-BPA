@@ -50,10 +50,10 @@ class ProjectController extends Controller
         $project->members()->attach($request->members);
     }
 
-    // Refresh members relationship to include newly attached members
+    // Refresh members relationship to include newly attached member
     $project->load('members');
 
-    // Notify division staff, collaborators, and managers
+    // Notify division staff, collaborator, and manager
     $divisionUsers = User::where('division_id', $project->division_id)->get();
     $members = $project->members;
     $managers = User::whereHas('division', function($q) {
@@ -105,7 +105,7 @@ class ProjectController extends Controller
             $project->members()->detach();
         }
 
-        // Notify division staff, collaborators, and managers about project update
+        // Notify division staff, collaborator, and manager about project update
         $project->load('members');
         $divisionUsers = User::where('division_id', $project->division_id)->get();
         $members = $project->members;
@@ -168,7 +168,7 @@ public function tasks($id)
     $reviewTasks   = $project->tasks->where('status', 'review');
     $doneTasks     = $project->tasks->where('status', 'done');
 
-    // Get available users (same division + collaborators)
+    // Get available users (same division + collaborator)
     $divisionUsers = User::where('division_id', $project->division_id)->get();
     $collaborators = $project->members;
     $availableUsers = $divisionUsers->merge($collaborators)->unique('id');

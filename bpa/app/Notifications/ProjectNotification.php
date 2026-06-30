@@ -10,7 +10,7 @@ class ProjectNotification extends Notification
     use Queueable;
 
     public $project;
-    public $action; // 'added' or 'removed'
+    public $action; 
 
     /**
      * Create a new notification instance.

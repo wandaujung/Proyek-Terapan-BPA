@@ -1,22 +1,21 @@
 @extends('layouts.manager')
 
 @section('content')
-      <!-- Content -->
+      
       <div id="page-dashboard" class="px-8 py-8">
 
-        <!-- Page Heading -->
+     
         <h1 class="brand text-4xl tracking-widest text-brand-text mb-1">MANAGER OVERVIEW</h1>
         <p class="text-[10px] font-semibold tracking-[.18em] text-brand-muted mt-0.5 uppercase mb-6">
           Monitor project progress, track ongoing activities, and review project performance from your manager dashboard.
         </p>
 
-        <!-- Tabs -->
         <div class="inline-flex items-center bg-brand-border rounded-full p-1 mb-8">
           <button id="tab-active-progress" class="tab-item tab-active text-sm font-semibold px-5 py-1.5 rounded-full" onclick="showTab('active')">Active Progress</button>
           <button id="tab-review-queue" class="tab-item text-sm font-medium px-5 py-1.5 rounded-full text-brand-muted" onclick="showTab('review')">Review Queue</button>
         </div>
 
-        <!-- ======= ACTIVE PROGRESS SECTIONS ======= -->
+      
         <div id="panel-active">
 
         @foreach($divisions as $division)
@@ -68,17 +67,14 @@
         </section>
         @endforeach
 
-        </div><!-- /panel-active -->
+        </div>
 
-        <!-- ======= REVIEW QUEUE PANEL ======= -->
         <div id="panel-review" class="hidden">
 
-          <!-- Pending Reviews badge -->
           <div class="mb-5">
             <span class="inline-block bg-brand-red text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded">Pending Reviews</span>
           </div>
 
-          <!-- Review items list -->
           <div class="flex flex-col gap-4">
 
             @forelse($reviewTasks as $task)
@@ -103,9 +99,9 @@
             @endforelse
 
           </div>
-        </div><!-- /panel-review -->
+        </div>
 
-      </div><!-- /Content Dashboard -->
+      </div>
 @endsection
 
 @section('scripts')

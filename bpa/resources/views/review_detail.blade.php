@@ -1,10 +1,10 @@
 @extends('layouts.manager')
 
 @section('content')
-  <!-- Main Content Panel -->
+ 
   <div class="flex-1 bg-white p-12">
 
-    <!-- Back Navigation -->
+
     <a href="{{ route('manager.reviews') }}" class="flex items-center gap-2 text-gray-500 font-bold hover:text-gray-800 transition mb-6 text-sm tracking-wide">
       <svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -12,19 +12,18 @@
       BACK TO QUEUE
     </a>
 
-    <!-- Editorial Tag -->
     <div class="mb-4">
       <span class="bg-[#A30F22] text-white font-extrabold text-[10px] uppercase px-3 py-1.5 rounded-full tracking-wider">
         EDITORIAL REVIEW
       </span>
     </div>
 
-    <!-- Page Title - Dynamic -->
+ 
     <h1 class="text-4xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tight max-w-3xl mb-6">
       {{ $task->title }}
     </h1>
 
-    <!-- Authorship metadata - Dynamic -->
+   
     <div class="flex items-center gap-6 mb-10">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-[#C5BFB9] flex items-center justify-center text-xs font-bold text-gray-600 border border-gray-100 shadow-sm">
@@ -51,10 +50,10 @@
       </div>
     </div>
 
-    <!-- Review Grid Panels -->
+ 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
       
-      <!-- Left Column -->
+
       <div class="lg:col-span-2 space-y-8">
         
         <!-- Description -->

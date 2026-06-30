@@ -5,7 +5,7 @@ use App\Models\User;
 use App\Models\Task;
 use Carbon\Carbon;
 
-$user = User::first(); // Assuming this is the logged in user
+$user = User::first(); 
 $divisionId = $user->division_id;
 $today = Carbon::today()->toDateString();
 

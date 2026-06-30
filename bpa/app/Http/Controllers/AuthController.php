@@ -10,18 +10,11 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // =====================
-    // FORM
-    // =====================
     public function loginForm()
     {
         return view('auth.login');
     }
 
-
-    // =====================
-    // LOGIN
-    // =====================
     public function login(Request $request)
     {
         $request->validate([
@@ -67,9 +60,6 @@ class AuthController extends Controller
         return back()->with('error', 'Email atau password salah');
     }
 
-    // =====================
-    // LOGOUT 
-    // =====================
     public function logout()
     {
         Auth::logout();
